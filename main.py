@@ -42,10 +42,11 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         title = self.line_title.text()  # QLineEdit for Title
         address1 = self.line_address1.text()  # QLineEdit for Address 1
         address2 = self.line_address2.text()  # QLineEdit for Address 2
+        country = self.line_country.text()  # QLineEdit for Country
         misc = self.line_misc.text()  # QLineEdit for Misc
 
         row = self.table.rowCount()
-        self.populate_table(row, id, name, age, title, address1, address2, misc)
+        self.populate_table(row, id, name, age, title, address1, address2, country, misc)
 
         # Prepare the data dictionary
         data = {
@@ -55,7 +56,8 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
             "Title": title,
             "Address": {
                 "Address 1": address1,
-                "Address 2": address2
+                "Address 2": address2,
+                "Country": country
             },
             "Misc": misc
         }
@@ -84,7 +86,8 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
             title = self.table.item(selected_row, 3).text()
             address1 = self.table.item(selected_row, 4).text()
             address2 = self.table.item(selected_row, 5).text()
-            misc = self.table.item(selected_row, 6).text()
+            country = self.table.item(selected_row, 6).text()
+            misc = self.table.item(selected_row, 7).text()
 
             # Prepare the updated data
             updated_data = {
@@ -93,7 +96,8 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
                 "Title": title,
                 "Address": {
                     "Address 1": address1,
-                    "Address 2": address2
+                    "Address 2": address2,
+                    "Country": country
                 },
                 "Misc": misc
             }
@@ -114,7 +118,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         self.table.resizeColumnsToContents()
 
     def mongo_query(self):
-        print("Querying MongoDB")
+        self.initialize_table()  # Clear the table before populating
 
         if self.mongo_db.is_connected:
             # Access the 'employees' collection in the 'employees' database
@@ -138,7 +142,8 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
                 self.table.setItem(row, 3, QTableWidgetItem(doc.get('Title', '')))
                 self.table.setItem(row, 4, QTableWidgetItem(doc.get('Address', {}).get('Address 1', '')))
                 self.table.setItem(row, 5, QTableWidgetItem(doc.get('Address', {}).get('Address 2', '')))
-                self.table.setItem(row, 6, QTableWidgetItem(doc.get('Misc', '')))
+                self.table.setItem(row, 6, QTableWidgetItem(doc.get('Address', {}).get('Country', '')))
+                self.table.setItem(row, 7, QTableWidgetItem(doc.get('Misc', '')))
 
             # Resize the table to fit the new data
             self.table.resizeColumnsToContents()
@@ -216,11 +221,11 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
 
     def initialize_table(self):
         self.table.setRowCount(0) # clears the table
-        self.table.setColumnCount(7)
-        self.table.setHorizontalHeaderLabels(['ID', 'Name', 'Age', 'Title', 'Address 1', 'Address 2', 'Misc'])
+        self.table.setColumnCount(8)
+        self.table.setHorizontalHeaderLabels(['ID', 'Name', 'Age', 'Title', 'Address 1', 'Address 2', 'Country', 'Misc'])
         self.table.setSelectionMode(QTableWidget.MultiSelection)
 
-    def populate_table(self, row, id, name, age, title, address1, address2, misc):
+    def populate_table(self, row, id, name, age, title, address1, address2, country, misc):
         self.table.insertRow(row)
         self.table.setItem(row, 0, QTableWidgetItem(str(id)))
         self.table.setItem(row, 1, QTableWidgetItem(name))
@@ -228,7 +233,8 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         self.table.setItem(row, 3, QTableWidgetItem(title))
         self.table.setItem(row, 4, QTableWidgetItem(address1))
         self.table.setItem(row, 5, QTableWidgetItem(address2))
-        self.table.setItem(row, 6, QTableWidgetItem(misc))
+        self.table.setItem(row, 6, QTableWidgetItem(country))
+        self.table.setItem(row, 7, QTableWidgetItem(misc))
         self.table.resizeColumnsToContents()
         self.table.resizeRowsToContents()
 
@@ -238,6 +244,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         self.line_title.clear()
         self.line_address1.clear()
         self.line_address2.clear()
+        self.line_country.clear()
         self.line_misc.clear()
 
     def dark_mode(self, checked):
@@ -304,6 +311,8 @@ class SettingsManager: # used to load and save settings when opening and closing
         size = self.settings.value('window_size', None)
         pos = self.settings.value('window_pos', None)
         dark = self.settings.value('dark_mode')
+        server_url = self.settings.value('server_url')
+        username = self.settings.value('username')
         
         if size is not None:
             self.main_window.resize(size)
@@ -312,11 +321,17 @@ class SettingsManager: # used to load and save settings when opening and closing
         if dark == 'true':
             self.main_window.action_dark_mode.setChecked(True)
             self.main_window.setStyleSheet(qdarkstyle.load_stylesheet_pyside6())
+        if server_url is not None:
+            self.main_window.line_server.setText(server_url)
+        if username is not None:
+            self.main_window.line_user.setText(username)
 
     def save_settings(self):
         self.settings.setValue('window_size', self.main_window.size())
         self.settings.setValue('window_pos', self.main_window.pos())
         self.settings.setValue('dark_mode', self.main_window.action_dark_mode.isChecked())
+        self.settings.setValue('server_url', self.main_window.line_server.text())
+        self.settings.setValue('username', self.main_window.line_user.text())
 
 class AboutWindow(QWidget, about_ui): # Configures the About window
     def __init__(self, dark_mode=False):

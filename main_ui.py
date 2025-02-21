@@ -134,6 +134,11 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_2.addWidget(self.line_address2)
 
+        self.line_country = QLineEdit(self.groupBox)
+        self.line_country.setObjectName(u"line_country")
+
+        self.horizontalLayout_2.addWidget(self.line_country)
+
 
         self.gridLayout.addLayout(self.horizontalLayout_2, 1, 0, 1, 1)
 
@@ -214,7 +219,8 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.line_age, self.line_title)
         QWidget.setTabOrder(self.line_title, self.line_address1)
         QWidget.setTabOrder(self.line_address1, self.line_address2)
-        QWidget.setTabOrder(self.line_address2, self.line_misc)
+        QWidget.setTabOrder(self.line_address2, self.line_country)
+        QWidget.setTabOrder(self.line_country, self.line_misc)
         QWidget.setTabOrder(self.line_misc, self.button_send)
         QWidget.setTabOrder(self.button_send, self.button_update)
         QWidget.setTabOrder(self.button_update, self.button_delete)
@@ -252,6 +258,7 @@ class Ui_MainWindow(object):
         self.line_address1.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Address 1", None))
         self.line_address2.setText("")
         self.line_address2.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Address 2", None))
+        self.line_country.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Country", None))
         self.button_send.setText(QCoreApplication.translate("MainWindow", u"Send", None))
         self.button_update.setText(QCoreApplication.translate("MainWindow", u"Update", None))
         self.button_delete.setText(QCoreApplication.translate("MainWindow", u"Delete", None))
