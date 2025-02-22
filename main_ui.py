@@ -75,6 +75,14 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_4.addWidget(self.line_pass)
 
+        self.line_database = QLineEdit(self.groupBox_2)
+        self.line_database.setObjectName(u"line_database")
+        sizePolicy.setHeightForWidth(self.line_database.sizePolicy().hasHeightForWidth())
+        self.line_database.setSizePolicy(sizePolicy)
+        self.line_database.setMinimumSize(QSize(150, 0))
+
+        self.horizontalLayout_4.addWidget(self.line_database)
+
         self.button_connect = QPushButton(self.groupBox_2)
         self.button_connect.setObjectName(u"button_connect")
         sizePolicy.setHeightForWidth(self.button_connect.sizePolicy().hasHeightForWidth())
@@ -213,7 +221,8 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         QWidget.setTabOrder(self.line_server, self.line_user)
         QWidget.setTabOrder(self.line_user, self.line_pass)
-        QWidget.setTabOrder(self.line_pass, self.button_connect)
+        QWidget.setTabOrder(self.line_pass, self.line_database)
+        QWidget.setTabOrder(self.line_database, self.button_connect)
         QWidget.setTabOrder(self.button_connect, self.line_name)
         QWidget.setTabOrder(self.line_name, self.line_age)
         QWidget.setTabOrder(self.line_age, self.line_title)
@@ -247,6 +256,7 @@ class Ui_MainWindow(object):
         self.line_server.setPlaceholderText(QCoreApplication.translate("MainWindow", u"MongoDB IP", None))
         self.line_user.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Username", None))
         self.line_pass.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Password", None))
+        self.line_database.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Database", None))
         self.button_connect.setText(QCoreApplication.translate("MainWindow", u"Connect", None))
         self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Employee Information", None))
         self.line_name.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Name", None))

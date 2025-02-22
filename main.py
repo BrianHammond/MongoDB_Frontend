@@ -205,12 +205,13 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
 
     def mongo_url(self):
         server_url = self.line_server.text()  # Get IP address from line_server
-        username = self.line_user.text()       # Get username from line_user
-        password = self.line_pass.text()       # Get password from line_pass
+        username = self.line_user.text()      # Get username from line_user
+        password = self.line_pass.text()      # Get password from line_pass
+        auth_db = self.line_database.text()   # Get database from line_db
 
         if server_url:
             # Create MongoDB instance with provided details
-            self.mongo_db = MongoDB(host=server_url, username=username, password=password)
+            self.mongo_db = MongoDB(host=server_url, username=username, password=password, auth_db=auth_db)
             self.mongo_db.connect()  # Try to connect
             
             # Update the connection status label
@@ -265,7 +266,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         event.accept()
 
 class MongoDB:
-    def __init__(self, host=None, port=27017, username=None, password=None, auth_db="admin"):
+    def __init__(self, host=None, port=27017, username=None, password=None, auth_db=None):
         self.host = host
         self.port = port
         self.username = username
@@ -313,6 +314,7 @@ class SettingsManager: # used to load and save settings when opening and closing
         dark = self.settings.value('dark_mode')
         server_url = self.settings.value('server_url')
         username = self.settings.value('username')
+        database = self.settings.value('database')
         
         if size is not None:
             self.main_window.resize(size)
@@ -325,6 +327,8 @@ class SettingsManager: # used to load and save settings when opening and closing
             self.main_window.line_server.setText(server_url)
         if username is not None:
             self.main_window.line_user.setText(username)
+        if database is not None:
+            self.main_window.line_database.setText(database)
 
     def save_settings(self):
         self.settings.setValue('window_size', self.main_window.size())
@@ -332,6 +336,7 @@ class SettingsManager: # used to load and save settings when opening and closing
         self.settings.setValue('dark_mode', self.main_window.action_dark_mode.isChecked())
         self.settings.setValue('server_url', self.main_window.line_server.text())
         self.settings.setValue('username', self.main_window.line_user.text())
+        self.settings.setValue('database', self.main_window.line_database.text())
 
 class AboutWindow(QWidget, about_ui): # Configures the About window
     def __init__(self, dark_mode=False):
