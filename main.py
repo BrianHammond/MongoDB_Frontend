@@ -30,9 +30,8 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         self.action_about.triggered.connect(self.show_about)
         self.action_about_qt.triggered.connect(self.about_qt)
 
-        self.initialize_table()
-
     def mongo_send(self):
+        database = self.line_database.text()
         self.current_date = datetime.datetime.now().strftime("%m%d%Y%H%M%S")
         id = self.current_date
 
@@ -65,7 +64,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         # Insert data into MongoDB
         if self.mongo_db.is_connected:
             # Access the 'employees' collection in the 'employees' database
-            collection = self.mongo_db.db['employees']  # Switch to the 'employees' collection
+            collection = self.mongo_db.db[database]  # Switch to the 'employees' collection
             collection.insert_one(data)  # Insert the data into the collection
             print("Data inserted into MongoDB 'employees' collection")
         else:
@@ -75,6 +74,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         self.clear_fields()
 
     def mongo_update(self):
+        database = self.line_database.text()
         # Get the selected row from the table
         selected_row = self.table.currentRow()  # Get the selected row index
 
@@ -104,7 +104,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
 
             # Update the data in MongoDB
             if self.mongo_db.is_connected:
-                collection = self.mongo_db.db['employees']
+                collection = self.mongo_db.db[database]
                 # Update the document with the given ID
                 result = collection.update_one({"_id": id}, {"$set": updated_data})
 
@@ -118,11 +118,12 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         self.table.resizeColumnsToContents()
 
     def mongo_query(self):
+        database = self.line_database.text()
         self.initialize_table()  # Clear the table before populating
 
         if self.mongo_db.is_connected:
             # Access the 'employees' collection in the 'employees' database
-            collection = self.mongo_db.db['employees']
+            collection = self.mongo_db.db[database]
 
             # Query to get all documents from the collection
             documents = collection.find()
@@ -154,6 +155,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
             print("MongoDB is not connected. Cannot query data.")
 
     def mongo_delete(self):
+        database = self.line_database.text()
         print("Deleting from MongoDB")
 
         # Get the selected rows from the table
@@ -183,7 +185,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
             return  # Early return if not connected to MongoDB
 
         # Perform the deletion
-        collection = self.mongo_db.db['employees']
+        collection = self.mongo_db.db[database]
         result = collection.delete_many({"_id": {"$in": list(ids_to_delete)}})
 
         # Handle the result of the deletion
@@ -205,20 +207,21 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
 
     def mongo_url(self):
         server_url = self.line_server.text()  # Get IP address from line_server
-        username = self.line_user.text()      # Get username from line_user
-        password = self.line_pass.text()      # Get password from line_pass
+        username = self.line_username.text()  # Get username from line_user
+        password = self.line_password.text()  # Get password from line_pass
         auth_db = self.line_database.text()   # Get database from line_db
 
-        if server_url:
-            # Create MongoDB instance with provided details
-            self.mongo_db = MongoDB(host=server_url, username=username, password=password, auth_db=auth_db)
-            self.mongo_db.connect()  # Try to connect
-            
-            # Update the connection status label
-            self.update_connection_status()  # Refresh the connection status
-        else:
-            print("No server URL entered")
-            self.label_connection.setText("Please enter a server URL")
+        if not server_url or not username or not password or not auth_db:
+            QMessageBox.warning(self, "Input Error", "Please fill in all fields: Server URL, Username, Password, and Database.")
+            return
+
+        # Create MongoDB instance with provided details
+        self.mongo_db = MongoDB(host=server_url, username=username, password=password, auth_db=auth_db)
+        self.mongo_db.connect()  # Try to connect
+
+        # Update the connection status label
+        self.update_connection_status()  # Refresh the connection status
+        self.initialize_table()  # Initialize the table after connecting
 
     def initialize_table(self):
         self.table.setRowCount(0) # clears the table
@@ -298,7 +301,7 @@ class MongoDB:
                 print(f"Connected to MongoDB at {self.host}:{self.port} without authentication")
             
             # Set the default database to use after connection is established
-            self.db = self.client['employees']  # using the 'employees' database
+            self.db = self.client[self.auth_db] 
             
         except Exception as e:
             print(f"Error connecting to MongoDB: {e}")
@@ -326,7 +329,7 @@ class SettingsManager: # used to load and save settings when opening and closing
         if server_url is not None:
             self.main_window.line_server.setText(server_url)
         if username is not None:
-            self.main_window.line_user.setText(username)
+            self.main_window.line_username.setText(username)
         if database is not None:
             self.main_window.line_database.setText(database)
 
@@ -335,7 +338,7 @@ class SettingsManager: # used to load and save settings when opening and closing
         self.settings.setValue('window_pos', self.main_window.pos())
         self.settings.setValue('dark_mode', self.main_window.action_dark_mode.isChecked())
         self.settings.setValue('server_url', self.main_window.line_server.text())
-        self.settings.setValue('username', self.main_window.line_user.text())
+        self.settings.setValue('username', self.main_window.line_username.text())
         self.settings.setValue('database', self.main_window.line_database.text())
 
 class AboutWindow(QWidget, about_ui): # Configures the About window
