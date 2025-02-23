@@ -25,6 +25,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         self.button_query.clicked.connect(self.mongo_query)
         self.button_delete.clicked.connect(self.mongo_delete)
         self.button_connect.clicked.connect(self.mongo_url)
+        self.button_search.clicked.connect(self.mongo_search)
 
         # menubar
         self.action_dark_mode.toggled.connect(self.dark_mode)
@@ -198,6 +199,51 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
                 self.table.removeRow(row)
         else:
             print("No documents found to delete in MongoDB")
+
+    def mongo_search(self):
+        db_collection = self.line_collection.text()
+        firstname_search = self.line_firstname_search.text()
+        lastname_search = self.line_lastname_search.text()
+
+        query = {}
+        if firstname_search:
+            query["Name.First Name"] = firstname_search
+        if lastname_search:
+            query["Name.Last Name"] = lastname_search
+
+        self.initialize_table()  # Clear the table before populating
+
+        if self.mongo_db.is_connected:
+            collection = self.mongo_db.db[db_collection]
+
+            # Query to get documents based on search criteria
+            documents = collection.find(query)
+
+            # Clear the existing data in the table
+            self.table.setRowCount(0)
+
+            # Populate the table with data from MongoDB
+            for doc in documents:
+                row = self.table.rowCount()  # Get the next empty row index
+                self.table.insertRow(row)  # Add a new row
+
+                # Insert data into respective columns
+                self.table.setItem(row, 0, QTableWidgetItem(str(doc.get('_id'))))
+                self.table.setItem(row, 1, QTableWidgetItem(doc.get('Name', {}).get('First Name', '')))
+                self.table.setItem(row, 2, QTableWidgetItem(doc.get('Name', {}).get('Last Name', '')))
+                self.table.setItem(row, 3, QTableWidgetItem(str(doc.get('Age', ''))))
+                self.table.setItem(row, 4, QTableWidgetItem(doc.get('Title', '')))
+                self.table.setItem(row, 5, QTableWidgetItem(doc.get('Address', {}).get('Address 1', '')))
+                self.table.setItem(row, 6, QTableWidgetItem(doc.get('Address', {}).get('Address 2', '')))
+                self.table.setItem(row, 7, QTableWidgetItem(doc.get('Address', {}).get('Country', '')))
+                self.table.setItem(row, 8, QTableWidgetItem(doc.get('Misc', '')))
+
+            # Resize the table to fit the new data
+            self.table.resizeColumnsToContents()
+            self.table.resizeRowsToContents()
+
+        else:
+            print("MongoDB is not connected. Cannot query data.")
 
     def update_connection_status(self):
         self.mongo_db.is_connected = self.mongo_db.check_connection()
