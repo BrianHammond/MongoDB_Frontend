@@ -83,6 +83,11 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_4.addWidget(self.line_database)
 
+        self.line_collection = QLineEdit(self.groupBox_2)
+        self.line_collection.setObjectName(u"line_collection")
+
+        self.horizontalLayout_4.addWidget(self.line_collection)
+
         self.button_connect = QPushButton(self.groupBox_2)
         self.button_connect.setObjectName(u"button_connect")
         sizePolicy.setHeightForWidth(self.button_connect.sizePolicy().hasHeightForWidth())
@@ -106,10 +111,15 @@ class Ui_MainWindow(object):
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
-        self.line_name = QLineEdit(self.groupBox)
-        self.line_name.setObjectName(u"line_name")
+        self.line_firstname = QLineEdit(self.groupBox)
+        self.line_firstname.setObjectName(u"line_firstname")
 
-        self.horizontalLayout.addWidget(self.line_name)
+        self.horizontalLayout.addWidget(self.line_firstname)
+
+        self.line_lastname = QLineEdit(self.groupBox)
+        self.line_lastname.setObjectName(u"line_lastname")
+
+        self.horizontalLayout.addWidget(self.line_lastname)
 
         self.line_age = QLineEdit(self.groupBox)
         self.line_age.setObjectName(u"line_age")
@@ -222,9 +232,11 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.line_server, self.line_username)
         QWidget.setTabOrder(self.line_username, self.line_password)
         QWidget.setTabOrder(self.line_password, self.line_database)
-        QWidget.setTabOrder(self.line_database, self.button_connect)
-        QWidget.setTabOrder(self.button_connect, self.line_name)
-        QWidget.setTabOrder(self.line_name, self.line_age)
+        QWidget.setTabOrder(self.line_database, self.line_collection)
+        QWidget.setTabOrder(self.line_collection, self.button_connect)
+        QWidget.setTabOrder(self.button_connect, self.line_firstname)
+        QWidget.setTabOrder(self.line_firstname, self.line_lastname)
+        QWidget.setTabOrder(self.line_lastname, self.line_age)
         QWidget.setTabOrder(self.line_age, self.line_title)
         QWidget.setTabOrder(self.line_title, self.line_address1)
         QWidget.setTabOrder(self.line_address1, self.line_address2)
@@ -257,9 +269,11 @@ class Ui_MainWindow(object):
         self.line_username.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Username", None))
         self.line_password.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Password", None))
         self.line_database.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Database", None))
+        self.line_collection.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Collection", None))
         self.button_connect.setText(QCoreApplication.translate("MainWindow", u"Connect", None))
         self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Employee Information", None))
-        self.line_name.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Name", None))
+        self.line_firstname.setPlaceholderText(QCoreApplication.translate("MainWindow", u"First Name", None))
+        self.line_lastname.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Last Name", None))
         self.line_age.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Age", None))
         self.line_title.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Title", None))
         self.line_misc.setText("")
