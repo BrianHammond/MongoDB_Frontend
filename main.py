@@ -2,6 +2,7 @@ import sys
 import qdarkstyle
 import datetime
 import pymongo
+import json
 from pymongo import MongoClient
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidget, QTableWidgetItem, QMessageBox
 from PySide6.QtCore import QSettings
@@ -38,14 +39,14 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         id = self.current_date
 
         # Get the values from the QLineEdits
-        firstname = self.line_firstname.text()  # QLineEdit for Name
+        firstname = self.line_firstname.text()
         lastname = self.line_lastname.text()
-        age = self.line_age.text()    # QLineEdit for Age
-        title = self.line_title.text()  # QLineEdit for Title
-        address1 = self.line_address1.text()  # QLineEdit for Address 1
-        address2 = self.line_address2.text()  # QLineEdit for Address 2
-        country = self.line_country.text()  # QLineEdit for Country
-        misc = self.line_misc.text()  # QLineEdit for Misc
+        age = self.line_age.text()
+        title = self.line_title.text()
+        address1 = self.line_address1.text()
+        address2 = self.line_address2.text()
+        country = self.line_country.text()
+        misc = self.line_misc.text()
 
         row = self.table.rowCount()
         self.populate_table(row, id, firstname, lastname, age, title, address1, address2, country, misc)
@@ -69,13 +70,11 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
 
         # Insert data into MongoDB
         if self.mongo_db.is_connected:
-            # Access the 'employees' collection in the 'employees' database
-            collection = self.mongo_db.db[db_collection]  # Switch to the 'employees' collection
-            collection.insert_one(data)  # Insert the data into the collection
+            collection = self.mongo_db.db[db_collection]
+            collection.insert_one(data)
         else:
             print("MongoDB is not connected. Cannot insert data.")
 
-        # Optionally, clear fields after insertion
         self.clear_fields()
 
     def mongo_update(self):
@@ -128,7 +127,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
 
     def mongo_query(self):
         db_collection = self.line_collection.text()
-        self.initialize_table()  # Clear the table before populating
+        self.initialize_table()
 
         if self.mongo_db.is_connected:
             collection = self.mongo_db.db[db_collection]
@@ -136,14 +135,12 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
             # Query to get all documents from the collection
             documents = collection.find()
 
-            # Clear the existing data in the table
             self.table.setRowCount(0)
 
             # Populate the table with data from MongoDB
             for doc in documents:
                 row = self.table.rowCount()  # Get the next empty row index
-                self.table.insertRow(row)  # Add a new row
-
+                self.table.insertRow(row)
                 # Insert data into respective columns
                 self.table.setItem(row, 0, QTableWidgetItem(str(doc.get('_id'))))
                 self.table.setItem(row, 1, QTableWidgetItem(doc.get('Name', {}).get('First Name', '')))
@@ -155,7 +152,6 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
                 self.table.setItem(row, 7, QTableWidgetItem(doc.get('Address', {}).get('Country', '')))
                 self.table.setItem(row, 8, QTableWidgetItem(doc.get('Misc', '')))
 
-            # Resize the table to fit the new data
             self.table.resizeColumnsToContents()
             self.table.resizeRowsToContents()
 
@@ -211,7 +207,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         if lastname_search:
             query["Name.Last Name"] = lastname_search
 
-        self.initialize_table()  # Clear the table before populating
+        self.initialize_table()
 
         if self.mongo_db.is_connected:
             collection = self.mongo_db.db[db_collection]
@@ -238,7 +234,6 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
                 self.table.setItem(row, 7, QTableWidgetItem(doc.get('Address', {}).get('Country', '')))
                 self.table.setItem(row, 8, QTableWidgetItem(doc.get('Misc', '')))
 
-            # Resize the table to fit the new data
             self.table.resizeColumnsToContents()
             self.table.resizeRowsToContents()
 
@@ -253,10 +248,10 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
             self.label_connection.setText("Failed to connect to MongoDB")
 
     def mongo_url(self):
-        server_url = self.line_server.text()  # Get IP address from line_server
-        username = self.line_username.text()  # Get username from line_user
-        password = self.line_password.text()  # Get password from line_pass
-        database = self.line_database.text()   # Get database from line_db
+        server_url = self.line_server.text()
+        username = self.line_username.text()
+        password = self.line_password.text()
+        database = self.line_database.text()
 
         if any(not field for field in [server_url, username, password, database]):
             QMessageBox.warning(self, "Input Error", "Please fill in all fields: Server URL, Username, Password, and Database.")
@@ -337,15 +332,11 @@ class MongoDB:
 
     def connect(self):
         try:
-            if self.username and self.password:
-                # Connect to MongoDB with authentication using provided credentials
-                self.client = MongoClient(self.host, self.port,
+            self.client = MongoClient(self.host, self.port,
                                           username=self.username,
                                           password=self.password,
                                           authSource=self.database)  # Ensure 'authSource' is correct
-            else:
-                raise ValueError("Username and password must be provided for authentication")
-            
+           
             # Set the default database to use after connection is established
             self.db = self.client[self.database]
             
@@ -354,7 +345,7 @@ class MongoDB:
             print("Ping to MongoDB server successful")
         except pymongo.errors.OperationFailure as e:
             # Authentication failed, show message box with a simplified message
-            QMessageBox.critical(None, "Authentication Failed", "Authentication failed. Please check your credentials and try again.")
+            QMessageBox.critical(None, "FAILED TO CONNECT", "Please check your credentials\nIf your credentials are fine then check the database and collections and try again.")
         except Exception as e:
             QMessageBox.critical(None, "Connection Error", f"Error connecting to MongoDB: {e}")
 
