@@ -5,5 +5,6 @@ This is a simple MongoDB client I made for testing. It creates a database called
 UI created in Qt Designer
 
 Click on run.bat to run the program, the bat file will install pyside6, qdarkstyle and pymongo if they are not already installed on your system and start the application.
+
 Best Regards,<br/>
 Brian
