@@ -306,6 +306,7 @@ class Ui_MainWindow(object):
         self.action_about_qt.setText(QCoreApplication.translate("MainWindow", u"About Qt", None))
         self.action_dark_mode.setText(QCoreApplication.translate("MainWindow", u"Dark Mode", None))
         self.groupBox_2.setTitle(QCoreApplication.translate("MainWindow", u"Server Info", None))
+        self.line_server.setText(QCoreApplication.translate("MainWindow", u"localhost", None))
         self.line_server.setPlaceholderText(QCoreApplication.translate("MainWindow", u"MongoDB IP", None))
         self.line_username.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Username", None))
         self.line_password.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Password", None))
