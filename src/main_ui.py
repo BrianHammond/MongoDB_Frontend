@@ -121,6 +121,11 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addWidget(self.line_firstname)
 
+        self.line_middlename = QLineEdit(self.groupBox)
+        self.line_middlename.setObjectName(u"line_middlename")
+
+        self.horizontalLayout.addWidget(self.line_middlename)
+
         self.line_lastname = QLineEdit(self.groupBox)
         self.line_lastname.setObjectName(u"line_lastname")
 
@@ -273,7 +278,8 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.line_database, self.line_collection)
         QWidget.setTabOrder(self.line_collection, self.button_connect)
         QWidget.setTabOrder(self.button_connect, self.line_firstname)
-        QWidget.setTabOrder(self.line_firstname, self.line_lastname)
+        QWidget.setTabOrder(self.line_firstname, self.line_middlename)
+        QWidget.setTabOrder(self.line_middlename, self.line_lastname)
         QWidget.setTabOrder(self.line_lastname, self.line_age)
         QWidget.setTabOrder(self.line_age, self.line_title)
         QWidget.setTabOrder(self.line_title, self.line_address1)
@@ -315,6 +321,7 @@ class Ui_MainWindow(object):
         self.button_connect.setText(QCoreApplication.translate("MainWindow", u"Connect", None))
         self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Employee Information", None))
         self.line_firstname.setPlaceholderText(QCoreApplication.translate("MainWindow", u"First Name", None))
+        self.line_middlename.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Middle Name", None))
         self.line_lastname.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Last Name", None))
         self.line_age.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Age", None))
         self.line_title.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Title", None))

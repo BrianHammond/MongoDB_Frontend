@@ -40,6 +40,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
 
         # Get the values from the QLineEdits
         firstname = self.line_firstname.text()
+        middlename = self.line_middlename.text()
         lastname = self.line_lastname.text()
         age = self.line_age.text()
         title = self.line_title.text()
@@ -49,13 +50,14 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         misc = self.line_misc.text()
 
         row = self.table.rowCount()
-        self.populate_table(row, id, firstname, lastname, age, title, address1, address2, country, misc)
+        self.populate_table(row, id, firstname, middlename, lastname, age, title, address1, address2, country, misc)
 
         # Prepare the data dictionary
         data = {
             "_id": id,
             "Name": {
                 "First Name": firstname,
+                "Middle Name": middlename,
                 "Last Name": lastname
             },
             "Age": age,
@@ -86,18 +88,20 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
             # Retrieve the data from the table
             id = self.table.item(selected_row, 0).text()  # Get the ID from the first column
             firstname = self.table.item(selected_row, 1).text()
-            lastname = self.table.item(selected_row, 2).text()
-            age = self.table.item(selected_row, 3).text()
-            title = self.table.item(selected_row, 4).text()
-            address1 = self.table.item(selected_row, 5).text()
-            address2 = self.table.item(selected_row, 6).text()
-            country = self.table.item(selected_row, 7).text()
-            misc = self.table.item(selected_row, 8).text()
+            middlename = self.table.item(selected_row, 2).text()
+            lastname = self.table.item(selected_row, 3).text()
+            age = self.table.item(selected_row, 4).text()
+            title = self.table.item(selected_row, 5).text()
+            address1 = self.table.item(selected_row, 6).text()
+            address2 = self.table.item(selected_row, 7).text()
+            country = self.table.item(selected_row, 8).text()
+            misc = self.table.item(selected_row, 9).text()
 
             # Prepare the updated data
             updated_data = {
                 "Name": {
                     "First Name": firstname,
+                    "Middle Name": middlename,
                     "Last Name": lastname
                 },
                 "Age": age,
@@ -144,13 +148,14 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
                 # Insert data into respective columns
                 self.table.setItem(row, 0, QTableWidgetItem(str(doc.get('_id'))))
                 self.table.setItem(row, 1, QTableWidgetItem(doc.get('Name', {}).get('First Name', '')))
-                self.table.setItem(row, 2, QTableWidgetItem(doc.get('Name', {}).get('Last Name', '')))
-                self.table.setItem(row, 3, QTableWidgetItem(str(doc.get('Age', ''))))
-                self.table.setItem(row, 4, QTableWidgetItem(doc.get('Title', '')))
-                self.table.setItem(row, 5, QTableWidgetItem(doc.get('Address', {}).get('Address 1', '')))
-                self.table.setItem(row, 6, QTableWidgetItem(doc.get('Address', {}).get('Address 2', '')))
-                self.table.setItem(row, 7, QTableWidgetItem(doc.get('Address', {}).get('Country', '')))
-                self.table.setItem(row, 8, QTableWidgetItem(doc.get('Misc', '')))
+                self.table.setItem(row, 2, QTableWidgetItem(doc.get('Name', {}).get('Middle Name', '')))
+                self.table.setItem(row, 3, QTableWidgetItem(doc.get('Name', {}).get('Last Name', '')))
+                self.table.setItem(row, 4, QTableWidgetItem(str(doc.get('Age', ''))))
+                self.table.setItem(row, 5, QTableWidgetItem(doc.get('Title', '')))
+                self.table.setItem(row, 6, QTableWidgetItem(doc.get('Address', {}).get('Address 1', '')))
+                self.table.setItem(row, 7, QTableWidgetItem(doc.get('Address', {}).get('Address 2', '')))
+                self.table.setItem(row, 8, QTableWidgetItem(doc.get('Address', {}).get('Country', '')))
+                self.table.setItem(row, 9, QTableWidgetItem(doc.get('Misc', '')))
 
             self.table.resizeColumnsToContents()
             self.table.resizeRowsToContents()
@@ -226,13 +231,14 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
                 # Insert data into respective columns
                 self.table.setItem(row, 0, QTableWidgetItem(str(doc.get('_id'))))
                 self.table.setItem(row, 1, QTableWidgetItem(doc.get('Name', {}).get('First Name', '')))
-                self.table.setItem(row, 2, QTableWidgetItem(doc.get('Name', {}).get('Last Name', '')))
-                self.table.setItem(row, 3, QTableWidgetItem(str(doc.get('Age', ''))))
-                self.table.setItem(row, 4, QTableWidgetItem(doc.get('Title', '')))
-                self.table.setItem(row, 5, QTableWidgetItem(doc.get('Address', {}).get('Address 1', '')))
-                self.table.setItem(row, 6, QTableWidgetItem(doc.get('Address', {}).get('Address 2', '')))
-                self.table.setItem(row, 7, QTableWidgetItem(doc.get('Address', {}).get('Country', '')))
-                self.table.setItem(row, 8, QTableWidgetItem(doc.get('Misc', '')))
+                self.table.setItem(row, 2, QTableWidgetItem(doc.get('Name', {}).get('Middle Name', '')))
+                self.table.setItem(row, 3, QTableWidgetItem(doc.get('Name', {}).get('Last Name', '')))
+                self.table.setItem(row, 4, QTableWidgetItem(str(doc.get('Age', ''))))
+                self.table.setItem(row, 5, QTableWidgetItem(doc.get('Title', '')))
+                self.table.setItem(row, 6, QTableWidgetItem(doc.get('Address', {}).get('Address 1', '')))
+                self.table.setItem(row, 7, QTableWidgetItem(doc.get('Address', {}).get('Address 2', '')))
+                self.table.setItem(row, 8, QTableWidgetItem(doc.get('Address', {}).get('Country', '')))
+                self.table.setItem(row, 9, QTableWidgetItem(doc.get('Misc', '')))
 
             self.table.resizeColumnsToContents()
             self.table.resizeRowsToContents()
@@ -267,26 +273,28 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
 
     def initialize_table(self):
         self.table.setRowCount(0) # clears the table
-        self.table.setColumnCount(9)
-        self.table.setHorizontalHeaderLabels(['ID', 'First Name', 'Last Name', 'Age', 'Title', 'Address 1', 'Address 2', 'Country', 'Misc'])
+        self.table.setColumnCount(10)
+        self.table.setHorizontalHeaderLabels(['ID', 'First Name', 'Middle Name', 'Last Name', 'Age', 'Title', 'Address 1', 'Address 2', 'Country', 'Misc'])
         self.table.setSelectionMode(QTableWidget.MultiSelection)
 
-    def populate_table(self, row, id, firstname, lastname, age, title, address1, address2, country, misc):
+    def populate_table(self, row, id, firstname, middlename, lastname, age, title, address1, address2, country, misc):
         self.table.insertRow(row)
         self.table.setItem(row, 0, QTableWidgetItem(str(id)))
         self.table.setItem(row, 1, QTableWidgetItem(firstname))
-        self.table.setItem(row, 2, QTableWidgetItem(lastname))
-        self.table.setItem(row, 3, QTableWidgetItem(age))
-        self.table.setItem(row, 4, QTableWidgetItem(title))
-        self.table.setItem(row, 5, QTableWidgetItem(address1))
-        self.table.setItem(row, 6, QTableWidgetItem(address2))
-        self.table.setItem(row, 7, QTableWidgetItem(country))
-        self.table.setItem(row, 8, QTableWidgetItem(misc))
+        self.table.setItem(row, 2, QTableWidgetItem(middlename))
+        self.table.setItem(row, 3, QTableWidgetItem(lastname))
+        self.table.setItem(row, 4, QTableWidgetItem(age))
+        self.table.setItem(row, 5, QTableWidgetItem(title))
+        self.table.setItem(row, 6, QTableWidgetItem(address1))
+        self.table.setItem(row, 7, QTableWidgetItem(address2))
+        self.table.setItem(row, 8, QTableWidgetItem(country))
+        self.table.setItem(row, 9, QTableWidgetItem(misc))
         self.table.resizeColumnsToContents()
         self.table.resizeRowsToContents()
 
     def clear_fields(self):
         self.line_firstname.clear()
+        self.line_middlename.clear()
         self.line_lastname.clear()
         self.line_age.clear()
         self.line_title.clear()
