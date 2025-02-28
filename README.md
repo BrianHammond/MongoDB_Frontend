@@ -6,5 +6,7 @@ UI created in Qt Designer
 
 Click on run.bat to run the program, the bat file will install pyside6, qdarkstyle and pymongo if they are not already installed on your system and start the application.
 
+Tested with [MondoDB Cloud](https://account.mongodb.com/account/login)
+
 Best Regards,<br/>
 Brian

@@ -2,8 +2,8 @@ import sys
 import qdarkstyle
 import datetime
 import pymongo
-import json
 from pymongo import MongoClient
+from pymongo.server_api import ServerApi
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidget, QTableWidgetItem, QMessageBox
 from PySide6.QtCore import QSettings
 from main_ui import Ui_MainWindow as main_ui
@@ -258,7 +258,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
             return
 
         # Create MongoDB instance with provided details
-        self.mongo_db = MongoDB(host=server_url, username=username, password=password, database=database)
+        self.mongo_db = MongoDB(server_url=server_url, username=username, password=password, database=database)
         self.mongo_db.connect()  # Try to connect
 
         # Update the connection status label
@@ -312,9 +312,9 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         self.settings_manager.save_settings()  # Save settings using the manager
         event.accept()
 
-class MongoDB:
-    def __init__(self, host=None, port=27017, username=None, password=None, database=None):
-        self.host = host
+class MongoDB: # Connect to MongoDB Cloud
+    def __init__(self, server_url=None, port=27017, username=None, password=None, database=None):
+        self.server_url = server_url
         self.port = port
         self.username = username
         self.password = password
@@ -332,11 +332,12 @@ class MongoDB:
 
     def connect(self):
         try:
-            self.client = MongoClient(self.host, self.port,
-                                          username=self.username,
-                                          password=self.password,
-                                          authSource=self.database)  # Ensure 'authSource' is correct
-           
+            # Construct the MongoDB URI using the username and password
+            uri = f"mongodb+srv://{self.username}:{self.password}@{self.server_url}/?retryWrites=true&w=majority&appName={self.username}"
+            
+            # Create the MongoDB client using the URI
+            self.client = MongoClient(uri, server_api=ServerApi('1'))
+            
             # Set the default database to use after connection is established
             self.db = self.client[self.database]
             
