@@ -8,6 +8,8 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidget, 
 from PySide6.QtCore import QSettings
 from main_ui import Ui_MainWindow as main_ui
 from about_ui import Ui_Form as about_ui
+from cryptography.fernet import Fernet
+import base64
 
 class MainWindow(QMainWindow, main_ui): # used to display the main user interface
     def __init__(self):
@@ -17,8 +19,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         self.settings_manager.load_settings()  # Load settings when the app starts
         self.mongo_db = MongoDB()  # Initialize MongoDB instance
 
-        # Update label_connection based on connection status
-        self.update_connection_status()
+        self.label_connection.setText("Not Connected to MongoDB")
 
         # buttons
         self.button_send.clicked.connect(self.mongo_send)
@@ -269,7 +270,8 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
 
         # Update the connection status label
         self.update_connection_status()  # Refresh the connection status
-        self.initialize_table()  # Initialize the table after connecting
+        #self.initialize_table()  # Initialize the table after connecting
+        self.mongo_query()
 
     def initialize_table(self):
         self.table.setRowCount(0) # clears the table
@@ -362,6 +364,25 @@ class SettingsManager: # used to load and save settings when opening and closing
     def __init__(self, main_window):
         self.main_window = main_window
         self.settings = QSettings('settings.ini', QSettings.IniFormat)
+        self.key = self.settings.value('encryption_key', None)
+        if self.key is None:
+            self.key = Fernet.generate_key()
+            self.settings.setValue('encryption_key', self.key.decode())
+        self.cipher = Fernet(self.key)
+
+    def encrypt_text(self, text):
+        if not text:
+            return None
+        return self.cipher.encrypt(text.encode()).decode()
+    
+    def decrypt_text(self, encrypted_text):
+        if not encrypted_text:
+            return None
+        try:
+            return self.cipher.decrypt(encrypted_text.encode()).decode()
+        except Exception as e:
+            print(f"Decryption error: {e}")
+            return None
 
     def load_settings(self):
         size = self.settings.value('window_size', None)
@@ -371,6 +392,7 @@ class SettingsManager: # used to load and save settings when opening and closing
         username = self.settings.value('username')
         database = self.settings.value('database')
         collection = self.settings.value('collection')
+        encrypted_password = self.settings.value('password')
         
         if size is not None:
             self.main_window.resize(size)
@@ -383,6 +405,15 @@ class SettingsManager: # used to load and save settings when opening and closing
             self.main_window.line_server.setText(server_url)
         if username is not None:
             self.main_window.line_username.setText(username)
+
+        if encrypted_password is not None:
+            password = self.decrypt_text(encrypted_password)
+            if password:
+                self.main_window.line_password.setText(password)
+            else:
+                self.main_window.line_password.setText("")
+
+
         if database is not None:
             self.main_window.line_database.setText(database)
         if collection is not None:
@@ -396,6 +427,9 @@ class SettingsManager: # used to load and save settings when opening and closing
         self.settings.setValue('username', self.main_window.line_username.text())
         self.settings.setValue('database', self.main_window.line_database.text())
         self.settings.setValue('collection', self.main_window.line_collection.text())
+
+        password = self.main_window.line_password.text()
+        self.settings.setValue('password', self.encrypt_text(password))
 
 class AboutWindow(QWidget, about_ui): # Configures the About window
     def __init__(self, dark_mode=False):
