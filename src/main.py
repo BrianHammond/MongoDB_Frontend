@@ -345,7 +345,6 @@ class MongoDB: # Connect to MongoDB Cloud
             if self.parent and self.parent.radio_mongo_cloud.isChecked():
                 uri = f"mongodb+srv://{self.username}:{self.password}@{self.server_url}/?retryWrites=true&w=majority&appName={self.cluster}"
                 self.client = MongoClient(uri, server_api=ServerApi('1'))
-                print(f"the cluster is called {self.cluster}")
             else:
                 # Local MongoDB connection
                 uri = f"mongodb://{self.username}:{self.password}@{self.server_url}:{self.port}/"
