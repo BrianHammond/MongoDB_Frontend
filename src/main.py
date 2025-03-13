@@ -26,7 +26,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         self.button_update.clicked.connect(self.mongo_update)
         self.button_query.clicked.connect(self.mongo_query)
         self.button_delete.clicked.connect(self.mongo_delete)
-        self.button_connect.clicked.connect(self.mongo_url)
+        self.button_connect.clicked.connect(self.connect_to_mongo)
         self.button_search.clicked.connect(self.mongo_search)
 
         # menubar
@@ -247,14 +247,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         else:
             print("MongoDB is not connected. Cannot query data.")
 
-    def update_connection_status(self):
-        self.mongo_db.is_connected = self.mongo_db.check_connection()
-        if self.mongo_db.is_connected:
-            self.label_connection.setText("Connected to MongoDB")
-        else:
-            self.label_connection.setText("Failed to connect to MongoDB")
-
-    def mongo_url(self):
+    def connect_to_mongo(self):
         server_url = self.line_server.text()
         username = self.line_username.text()
         password = self.line_password.text()
@@ -265,12 +258,15 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
             return
 
         # Create MongoDB instance with provided details
-        self.mongo_db = MongoDB(server_url=server_url, username=username, password=password, database=database)
+        self.mongo_db = MongoDB(
+            server_url=server_url, 
+            username=username, 
+            password=password, 
+            database=database,
+            parent=self)
+        
         self.mongo_db.connect()  # Try to connect
 
-        # Update the connection status label
-        self.update_connection_status()  # Refresh the connection status
-        #self.initialize_table()  # Initialize the table after connecting
         self.mongo_query()
 
     def initialize_table(self):
@@ -323,7 +319,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         event.accept()
 
 class MongoDB: # Connect to MongoDB Cloud
-    def __init__(self, server_url=None, port=27017, username=None, password=None, database=None):
+    def __init__(self, server_url=None, port=27017, username=None, password=None, database=None, parent=None):
         self.server_url = server_url
         self.port = port
         self.username = username
@@ -331,33 +327,39 @@ class MongoDB: # Connect to MongoDB Cloud
         self.database = database
         self.client = None
         self.db = None
-
-    def check_connection(self):
-        try:
-            # Try to send a ping to the server to check if it's alive
-            self.client.admin.command('ping')  # Pings the MongoDB server
-            return True
-        except Exception:
-            return False
+        self.is_connected = False
+        self.parent = parent
 
     def connect(self):
         try:
-            # Construct the MongoDB URI using the username and password
-            uri = f"mongodb+srv://{self.username}:{self.password}@{self.server_url}/?retryWrites=true&w=majority&appName={self.username}"
-            
-            # Create the MongoDB client using the URI
-            self.client = MongoClient(uri, server_api=ServerApi('1'))
+            # Check radio button state and use appropriate URI
+            if self.parent and self.parent.radio_mongo_cloud.isChecked():
+                uri = f"mongodb+srv://{self.username}:{self.password}@{self.server_url}/?retryWrites=true&w=majority&appName={self.username}"
+                self.client = MongoClient(uri, server_api=ServerApi('1'))
+            else:
+                # Local MongoDB connection
+                uri = f"mongodb://{self.username}:{self.password}@{self.server_url}:{self.port}/"
+                self.client = MongoClient(uri)
             
             # Set the default database to use after connection is established
             self.db = self.client[self.database]
             
             # Try to send a ping to the server to check if it's alive
             self.client.admin.command('ping')  # Pings the MongoDB server
+            self.is_connected = True
+
+            if self.parent:
+                self.parent.label_connection.setText("Connected to MongoDB")
             print("Ping to MongoDB server successful")
+            
         except pymongo.errors.OperationFailure as e:
+            if self.parent:
+                self.parent.label_connection.setText("Failed to connecte to MongoDB")
             # Authentication failed, show message box with a simplified message
             QMessageBox.critical(None, "FAILED TO CONNECT", "Please check your credentials\nIf your credentials are fine then check the database and collections and try again.")
         except Exception as e:
+            if self.parent:
+                self.parent.label_connection.setText("Failed to connecte to MongoDB")
             QMessageBox.critical(None, "Connection Error", f"Error connecting to MongoDB: {e}")
 
 class SettingsManager: # used to load and save settings when opening and closing the app
