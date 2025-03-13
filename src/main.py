@@ -347,6 +347,7 @@ class MongoDB: # Connect to MongoDB Cloud
             # Try to send a ping to the server to check if it's alive
             self.client.admin.command('ping')  # Pings the MongoDB server
             self.is_connected = True
+            QMessageBox.information(None, "MongoDB", f"Successfully connected {self.server_url}")
 
             if self.parent:
                 self.parent.label_connection.setText("Connected to MongoDB")
