@@ -354,12 +354,12 @@ class MongoDB: # Connect to MongoDB Cloud
             
         except pymongo.errors.OperationFailure as e:
             if self.parent:
-                self.parent.label_connection.setText("Failed to connecte to MongoDB")
+                self.parent.label_connection.setText("Failed to connect to MongoDB")
             # Authentication failed, show message box with a simplified message
             QMessageBox.critical(None, "FAILED TO CONNECT", "Please check your credentials\nIf your credentials are fine then check the database and collections and try again.")
         except Exception as e:
             if self.parent:
-                self.parent.label_connection.setText("Failed to connecte to MongoDB")
+                self.parent.label_connection.setText("Failed to connect to MongoDB")
             QMessageBox.critical(None, "Connection Error", f"Error connecting to MongoDB: {e}")
 
 class SettingsManager: # used to load and save settings when opening and closing the app
