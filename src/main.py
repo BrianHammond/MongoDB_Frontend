@@ -34,6 +34,12 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         self.action_about.triggered.connect(self.show_about)
         self.action_about_qt.triggered.connect(self.about_qt)
 
+        # radio button
+        self.radio_mongo_cloud.toggled.connect(self.toggle_line_cluster)
+
+    def toggle_line_cluster(self,checked):
+        self.line_cluster.setEnabled(checked)
+
     def mongo_send(self):
         db_collection = self.line_collection.text()
         self.current_date = datetime.datetime.now().strftime("%m%d%Y%H%M%S")
@@ -252,6 +258,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         username = self.line_username.text()
         password = self.line_password.text()
         database = self.line_database.text()
+        cluster = self.line_cluster.text()
 
         if any(not field for field in [server_url, username, password, database]):
             QMessageBox.warning(self, "Input Error", "Please fill in all fields: Server URL, Username, Password, and Database.")
@@ -263,6 +270,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
             username=username, 
             password=password, 
             database=database,
+            cluster=cluster,
             parent=self)
         
         self.mongo_db.connect()  # Try to connect
@@ -319,7 +327,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         event.accept()
 
 class MongoDB: # Connect to MongoDB Cloud
-    def __init__(self, server_url=None, port=27017, username=None, password=None, database=None, parent=None):
+    def __init__(self, server_url=None, port=27017, username=None, password=None, database=None, cluster=None, parent=None):
         self.server_url = server_url
         self.port = port
         self.username = username
@@ -327,6 +335,7 @@ class MongoDB: # Connect to MongoDB Cloud
         self.database = database
         self.client = None
         self.db = None
+        self.cluster = cluster
         self.is_connected = False
         self.parent = parent
 
@@ -334,8 +343,9 @@ class MongoDB: # Connect to MongoDB Cloud
         try:
             # Check radio button state and use appropriate URI
             if self.parent and self.parent.radio_mongo_cloud.isChecked():
-                uri = f"mongodb+srv://{self.username}:{self.password}@{self.server_url}/?retryWrites=true&w=majority&appName={self.username}"
+                uri = f"mongodb+srv://{self.username}:{self.password}@{self.server_url}/?retryWrites=true&w=majority&appName={self.cluster}"
                 self.client = MongoClient(uri, server_api=ServerApi('1'))
+                print(f"the cluster is called {self.cluster}")
             else:
                 # Local MongoDB connection
                 uri = f"mongodb://{self.username}:{self.password}@{self.server_url}:{self.port}/"
@@ -396,6 +406,8 @@ class SettingsManager: # used to load and save settings when opening and closing
         database = self.settings.value('database')
         collection = self.settings.value('collection')
         encrypted_password = self.settings.value('password')
+        on_cloud = self.settings.value('on_cloud')
+        cluster = self.settings.value('cluster')
         
         if size is not None:
             self.main_window.resize(size)
@@ -415,7 +427,12 @@ class SettingsManager: # used to load and save settings when opening and closing
                 self.main_window.line_password.setText(password)
             else:
                 self.main_window.line_password.setText("")
+        if on_cloud == 'true':
+            self.main_window.radio_mongo_cloud.setChecked(True)
+            self.main_window.line_cluster.setEnabled(True)
 
+        if cluster is not None:
+            self.main_window.line_cluster.setText(cluster)
 
         if database is not None:
             self.main_window.line_database.setText(database)
@@ -430,6 +447,8 @@ class SettingsManager: # used to load and save settings when opening and closing
         self.settings.setValue('username', self.main_window.line_username.text())
         self.settings.setValue('database', self.main_window.line_database.text())
         self.settings.setValue('collection', self.main_window.line_collection.text())
+        self.settings.setValue('on_cloud', self.main_window.radio_mongo_cloud.isChecked())
+        self.settings.setValue('cluster', self.main_window.line_cluster.text())
 
         password = self.main_window.line_password.text()
         self.settings.setValue('password', self.encrypt_text(password))

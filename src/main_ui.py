@@ -27,7 +27,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1062, 780)
+        MainWindow.resize(1062, 794)
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -56,7 +56,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.line_server = QLineEdit(self.groupBox_2)
         self.line_server.setObjectName(u"line_server")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.line_server.sizePolicy().hasHeightForWidth())
@@ -82,6 +82,12 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_4.addWidget(self.line_password)
 
+        self.line_cluster = QLineEdit(self.groupBox_2)
+        self.line_cluster.setObjectName(u"line_cluster")
+        self.line_cluster.setEnabled(False)
+
+        self.horizontalLayout_4.addWidget(self.line_cluster)
+
         self.radio_mongo_cloud = QRadioButton(self.groupBox_2)
         self.radio_mongo_cloud.setObjectName(u"radio_mongo_cloud")
 
@@ -98,24 +104,27 @@ class Ui_MainWindow(object):
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
         self.line_database = QLineEdit(self.groupBox_2)
         self.line_database.setObjectName(u"line_database")
-        sizePolicy1.setHeightForWidth(self.line_database.sizePolicy().hasHeightForWidth())
-        self.line_database.setSizePolicy(sizePolicy1)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.line_database.sizePolicy().hasHeightForWidth())
+        self.line_database.setSizePolicy(sizePolicy2)
         self.line_database.setMinimumSize(QSize(300, 0))
 
         self.horizontalLayout_6.addWidget(self.line_database)
 
         self.line_collection = QLineEdit(self.groupBox_2)
         self.line_collection.setObjectName(u"line_collection")
-        sizePolicy1.setHeightForWidth(self.line_collection.sizePolicy().hasHeightForWidth())
-        self.line_collection.setSizePolicy(sizePolicy1)
+        sizePolicy2.setHeightForWidth(self.line_collection.sizePolicy().hasHeightForWidth())
+        self.line_collection.setSizePolicy(sizePolicy2)
         self.line_collection.setMinimumSize(QSize(300, 0))
 
         self.horizontalLayout_6.addWidget(self.line_collection)
 
         self.button_connect = QPushButton(self.groupBox_2)
         self.button_connect.setObjectName(u"button_connect")
-        sizePolicy1.setHeightForWidth(self.button_connect.sizePolicy().hasHeightForWidth())
-        self.button_connect.setSizePolicy(sizePolicy1)
+        sizePolicy2.setHeightForWidth(self.button_connect.sizePolicy().hasHeightForWidth())
+        self.button_connect.setSizePolicy(sizePolicy2)
         self.button_connect.setMinimumSize(QSize(100, 0))
 
         self.horizontalLayout_6.addWidget(self.button_connect)
@@ -196,32 +205,32 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.button_send = QPushButton(self.groupBox)
         self.button_send.setObjectName(u"button_send")
-        sizePolicy1.setHeightForWidth(self.button_send.sizePolicy().hasHeightForWidth())
-        self.button_send.setSizePolicy(sizePolicy1)
+        sizePolicy2.setHeightForWidth(self.button_send.sizePolicy().hasHeightForWidth())
+        self.button_send.setSizePolicy(sizePolicy2)
         self.button_send.setMinimumSize(QSize(100, 0))
 
         self.horizontalLayout_3.addWidget(self.button_send)
 
         self.button_update = QPushButton(self.groupBox)
         self.button_update.setObjectName(u"button_update")
-        sizePolicy1.setHeightForWidth(self.button_update.sizePolicy().hasHeightForWidth())
-        self.button_update.setSizePolicy(sizePolicy1)
+        sizePolicy2.setHeightForWidth(self.button_update.sizePolicy().hasHeightForWidth())
+        self.button_update.setSizePolicy(sizePolicy2)
         self.button_update.setMinimumSize(QSize(100, 0))
 
         self.horizontalLayout_3.addWidget(self.button_update)
 
         self.button_delete = QPushButton(self.groupBox)
         self.button_delete.setObjectName(u"button_delete")
-        sizePolicy1.setHeightForWidth(self.button_delete.sizePolicy().hasHeightForWidth())
-        self.button_delete.setSizePolicy(sizePolicy1)
+        sizePolicy2.setHeightForWidth(self.button_delete.sizePolicy().hasHeightForWidth())
+        self.button_delete.setSizePolicy(sizePolicy2)
         self.button_delete.setMinimumSize(QSize(100, 0))
 
         self.horizontalLayout_3.addWidget(self.button_delete)
 
         self.button_query = QPushButton(self.groupBox)
         self.button_query.setObjectName(u"button_query")
-        sizePolicy1.setHeightForWidth(self.button_query.sizePolicy().hasHeightForWidth())
-        self.button_query.setSizePolicy(sizePolicy1)
+        sizePolicy2.setHeightForWidth(self.button_query.sizePolicy().hasHeightForWidth())
+        self.button_query.setSizePolicy(sizePolicy2)
         self.button_query.setMinimumSize(QSize(100, 0))
 
         self.horizontalLayout_3.addWidget(self.button_query)
@@ -260,8 +269,8 @@ class Ui_MainWindow(object):
 
         self.button_search = QPushButton(self.groupBox_3)
         self.button_search.setObjectName(u"button_search")
-        sizePolicy1.setHeightForWidth(self.button_search.sizePolicy().hasHeightForWidth())
-        self.button_search.setSizePolicy(sizePolicy1)
+        sizePolicy2.setHeightForWidth(self.button_search.sizePolicy().hasHeightForWidth())
+        self.button_search.setSizePolicy(sizePolicy2)
         self.button_search.setMinimumSize(QSize(100, 0))
 
         self.verticalLayout.addWidget(self.button_search)
@@ -337,6 +346,10 @@ class Ui_MainWindow(object):
         self.line_server.setPlaceholderText(QCoreApplication.translate("MainWindow", u"MongoDB IP", None))
         self.line_username.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Username", None))
         self.line_password.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Password", None))
+#if QT_CONFIG(statustip)
+        self.line_cluster.setStatusTip(QCoreApplication.translate("MainWindow", u"Used only for MongoDB Cloud", None))
+#endif // QT_CONFIG(statustip)
+        self.line_cluster.setPlaceholderText(QCoreApplication.translate("MainWindow", u"MongoDB Cluster", None))
 #if QT_CONFIG(statustip)
         self.radio_mongo_cloud.setStatusTip(QCoreApplication.translate("MainWindow", u"Will connect to MongoDB Cloud if checked", None))
 #endif // QT_CONFIG(statustip)
