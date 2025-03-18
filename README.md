@@ -1,6 +1,6 @@
 I'm still learning Python and using these as reference guides for any employment opportunities and future projects.
 
-This is a simple MongoDB client I made for testing. It creates a database called employess and collection called employees.
+This is a simple MongoDB client I made for testing. The main use of this program is data entry with MongoDB as the database.
 
 UI created in Qt Designer
 
