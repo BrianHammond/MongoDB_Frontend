@@ -39,10 +39,9 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
     def toggle_line_cluster(self,checked):
         self.line_cluster.setEnabled(checked)
 
-    def mongo_send(self):
+    def mongo_send(self): # sends data to MongoDB
         db_collection = self.line_collection.text()
-        self.current_date = datetime.datetime.now().strftime("%m%d%Y%H%M%S")
-        id = self.current_date
+        id = datetime.datetime.now().strftime("%m%d%Y%H%M%S")
 
         # Get the values from the QLineEdits
         firstname = self.line_firstname.text()
@@ -85,7 +84,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
 
         self.clear_fields()
 
-    def mongo_update(self):
+    def mongo_update(self): # updates data in MongoDB
         db_collection = self.line_collection.text()
         # Get the selected row from the table
         selected_row = self.table.currentRow()  # Get the selected row index
@@ -135,7 +134,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         
         self.table.resizeColumnsToContents()
 
-    def mongo_query(self):
+    def mongo_query(self): # queries data from MongoDB
         db_collection = self.line_collection.text()
         self.initialize_table()
 
@@ -169,7 +168,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         else:
             print("MongoDB is not connected. Cannot query data.")
 
-    def mongo_delete(self):
+    def mongo_delete(self): # deletes data from MongoDB
         db_collection = self.line_collection.text()
 
         # Get the selected rows from the table
@@ -207,7 +206,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         else:
             print("No documents found to delete in MongoDB")
 
-    def mongo_search(self):
+    def mongo_search(self): # searches data in MongoDB
         db_collection = self.line_collection.text()
         firstname_search = self.line_firstname_search.text()
         lastname_search = self.line_lastname_search.text()
@@ -252,7 +251,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         else:
             print("MongoDB is not connected. Cannot query data.")
 
-    def connect_to_mongo(self):
+    def connect_to_mongo(self): # connects to MongoDB
         server_url = self.line_server.text()
         username = self.line_username.text()
         password = self.line_password.text()
