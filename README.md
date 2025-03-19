@@ -4,7 +4,7 @@ This is a simple MongoDB client I made for testing. The main use of this program
 
 UI created in Qt Designer
 
-Click on run.bat to run the program, the bat file will install pyside6, qdarkstyle and pymongo if they are not already installed on your system and start the application.
+Click on run.bat to run the program.
 
 Tested with [MongoDB Cloud](https://account.mongodb.com/account/login) and MongoDB on docker, radio button lets you select between the two.
 
