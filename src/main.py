@@ -28,7 +28,8 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         self.button_delete.clicked.connect(self.mongo_delete) # Delete button is pressed
         self.button_connect.clicked.connect(self.connect_to_mongo) # Connect button is pressed
         self.button_search.clicked.connect(self.mongo_search) # Search button is pressed
-        self.button_csv.clicked.connect(self.export_to_csv) # Export to CSV button is pressed
+        self.button_import_csv.clicked.connect(self.import_csv) # Import CSV button is pressed
+        self.button_export_csv.clicked.connect(self.export_to_csv) # Export to CSV button is pressed
 
         # menubar
         self.action_dark_mode.toggled.connect(self.dark_mode) # Dark mode is toggled
@@ -277,6 +278,74 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         
         except Exception as e:
             QMessageBox.critical(self, "Export Error", f"Failed to export to CSV: {str(e)}")
+
+    def import_csv(self):  # imports data from CSV (import CSV button is pressed)
+        # Open a file dialog to select the CSV file
+        filename, _ = QFileDialog.getOpenFileName(self, 'Import CSV File', '', 'CSV Files (*.csv)')
+        
+        if not filename:
+            return  # User canceled the dialog, exit the function
+
+        db_collection = self.line_collection.text()
+        if not db_collection:
+            QMessageBox.warning(self, "Input Error", "Please specify a collection name.")
+            return
+
+        if not self.mongo_db.is_connected:
+            QMessageBox.warning(self, "Connection Error", "Please connect to MongoDB first.")
+            return
+
+        try:
+            with open(filename, 'r', newline='') as csvfile:
+                reader = csv.DictReader(csvfile)
+                
+                # Check if the CSV has the expected headers
+                expected_headers = {'ID', 'First Name', 'Middle Name', 'Last Name', 'Age', 'Title', 
+                                'Address 1', 'Address 2', 'Country', 'Misc'}
+                if not all(header in reader.fieldnames for header in expected_headers):
+                    QMessageBox.warning(self, "CSV Error", 
+                                    "CSV file must contain headers: ID, First Name, Middle Name, Last Name, "
+                                    "Age, Title, Address 1, Address 2, Country, Misc")
+                    return
+
+                # Prepare a list to hold all documents
+                documents = []
+                for row in reader:
+                    # Structure the data to match your MongoDB schema
+                    data = {
+                        "_id": row['ID'] if row['ID'] else datetime.datetime.now().strftime("%m%d%Y%H%M%S"),
+                        "Name": {
+                            "First Name": row['First Name'],
+                            "Middle Name": row['Middle Name'],
+                            "Last Name": row['Last Name']
+                        },
+                        "Age": row['Age'],
+                        "Title": row['Title'],
+                        "Address": {
+                            "Address 1": row['Address 1'],
+                            "Address 2": row['Address 2'],
+                            "Country": row['Country']
+                        },
+                        "Misc": row['Misc']
+                    }
+                    documents.append(data)
+
+                # Insert all documents into MongoDB
+                if documents:
+                    collection = self.mongo_db.db[db_collection]
+                    result = collection.insert_many(documents)
+                    QMessageBox.information(self, "Import Successful", 
+                                        f"Successfully imported {len(result.inserted_ids)} records into {db_collection}.")
+                    
+                    # Refresh the table to show the imported data
+                    self.mongo_query()
+                else:
+                    QMessageBox.information(self, "Import Info", "No data found in the CSV file to import.")
+
+        except FileNotFoundError:
+            QMessageBox.critical(self, "File Error", f"Could not find the file: {filename}")
+        except Exception as e:
+            QMessageBox.critical(self, "Import Error", f"Failed to import CSV: {str(e)}")
 
     def connect_to_mongo(self): # connects to MongoDB (connect button is pressed)
         server_url = self.line_server.text()

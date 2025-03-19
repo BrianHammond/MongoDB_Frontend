@@ -277,13 +277,21 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_7.addWidget(self.button_search)
 
-        self.button_csv = QPushButton(self.groupBox_3)
-        self.button_csv.setObjectName(u"button_csv")
-        sizePolicy2.setHeightForWidth(self.button_csv.sizePolicy().hasHeightForWidth())
-        self.button_csv.setSizePolicy(sizePolicy2)
-        self.button_csv.setMinimumSize(QSize(100, 0))
+        self.button_import_csv = QPushButton(self.groupBox_3)
+        self.button_import_csv.setObjectName(u"button_import_csv")
+        sizePolicy2.setHeightForWidth(self.button_import_csv.sizePolicy().hasHeightForWidth())
+        self.button_import_csv.setSizePolicy(sizePolicy2)
+        self.button_import_csv.setMinimumSize(QSize(100, 0))
 
-        self.horizontalLayout_7.addWidget(self.button_csv)
+        self.horizontalLayout_7.addWidget(self.button_import_csv)
+
+        self.button_export_csv = QPushButton(self.groupBox_3)
+        self.button_export_csv.setObjectName(u"button_export_csv")
+        sizePolicy2.setHeightForWidth(self.button_export_csv.sizePolicy().hasHeightForWidth())
+        self.button_export_csv.setSizePolicy(sizePolicy2)
+        self.button_export_csv.setMinimumSize(QSize(100, 0))
+
+        self.horizontalLayout_7.addWidget(self.button_export_csv)
 
         self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -342,8 +350,9 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.button_query, self.line_firstname_search)
         QWidget.setTabOrder(self.line_firstname_search, self.line_lastname_search)
         QWidget.setTabOrder(self.line_lastname_search, self.button_search)
-        QWidget.setTabOrder(self.button_search, self.button_csv)
-        QWidget.setTabOrder(self.button_csv, self.table)
+        QWidget.setTabOrder(self.button_search, self.button_import_csv)
+        QWidget.setTabOrder(self.button_import_csv, self.button_export_csv)
+        QWidget.setTabOrder(self.button_export_csv, self.table)
 
         self.menubar.addAction(self.menuSettings.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
@@ -413,7 +422,8 @@ class Ui_MainWindow(object):
         self.button_search.setStatusTip(QCoreApplication.translate("MainWindow", u"Search MongoDB", None))
 #endif // QT_CONFIG(statustip)
         self.button_search.setText(QCoreApplication.translate("MainWindow", u"Search", None))
-        self.button_csv.setText(QCoreApplication.translate("MainWindow", u"Export to CSV", None))
+        self.button_import_csv.setText(QCoreApplication.translate("MainWindow", u"Import CSV", None))
+        self.button_export_csv.setText(QCoreApplication.translate("MainWindow", u"Export to CSV", None))
         self.label_connection.setText(QCoreApplication.translate("MainWindow", u"MongoDB Connection Status Label", None))
         self.menuHelp.setTitle(QCoreApplication.translate("MainWindow", u"Help", None))
         self.menuSettings.setTitle(QCoreApplication.translate("MainWindow", u"Settings", None))
