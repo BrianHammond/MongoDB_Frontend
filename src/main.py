@@ -36,10 +36,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         self.action_about.triggered.connect(lambda: AboutWindow(dark_mode=self.action_dark_mode.isChecked()).exec()) # Displays the about dialog
 
         # radio button
-        self.radio_mongo_cloud.toggled.connect(self.toggle_line_cluster) # MongoDB Cloud radio button is toggled
-
-    def toggle_line_cluster(self,checked): # performed when MongoDB Cloud radio button is toggled
-        self.line_cluster.setEnabled(checked)
+        self.radio_mongo_cloud.toggled.connect(lambda checked: self.line_cluster.setEnabled(checked)) # Enables the cluster field when MongoDB Cloud radio button is toggled
 
     def mongo_send(self): # sends data to MongoDB (send button is pressed)
         db_collection = self.line_collection.text()
@@ -252,6 +249,8 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
 
         else:
             print("MongoDB is not connected. Cannot query data.")
+
+
 
     def export_to_csv(self):  # exports data to CSV (export to CSV button is pressed)
         self.filename = QFileDialog.getSaveFileName(self, 'Export File', '', 'Data File (*.csv)')
