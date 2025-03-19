@@ -250,8 +250,6 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         else:
             print("MongoDB is not connected. Cannot query data.")
 
-
-
     def export_to_csv(self):  # exports data to CSV (export to CSV button is pressed)
         self.filename = QFileDialog.getSaveFileName(self, 'Export File', '', 'Data File (*.csv)')
 
