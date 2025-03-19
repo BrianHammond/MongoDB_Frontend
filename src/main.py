@@ -21,25 +21,25 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         self.label_connection.setText("Not Connected to MongoDB")
 
         # buttons
-        self.button_send.clicked.connect(self.mongo_send)
-        self.button_update.clicked.connect(self.mongo_update)
-        self.button_query.clicked.connect(self.mongo_query)
-        self.button_delete.clicked.connect(self.mongo_delete)
-        self.button_connect.clicked.connect(self.connect_to_mongo)
-        self.button_search.clicked.connect(self.mongo_search)
+        self.button_send.clicked.connect(self.mongo_send) # Send button is pressed
+        self.button_update.clicked.connect(self.mongo_update) # Update button is pressed
+        self.button_query.clicked.connect(self.mongo_query) # Query button is pressed
+        self.button_delete.clicked.connect(self.mongo_delete) # Delete button is pressed
+        self.button_connect.clicked.connect(self.connect_to_mongo) # Connect button is pressed
+        self.button_search.clicked.connect(self.mongo_search) # Search button is pressed
 
         # menubar
-        self.action_dark_mode.toggled.connect(self.dark_mode)
-        self.action_about_qt.triggered.connect(lambda: QApplication.aboutQt())
-        self.action_about.triggered.connect(lambda: AboutWindow(dark_mode=self.action_dark_mode.isChecked()).exec())
+        self.action_dark_mode.toggled.connect(self.dark_mode) # Dark mode is toggled
+        self.action_about_qt.triggered.connect(lambda: QApplication.aboutQt()) # Displays the about Qt dialog
+        self.action_about.triggered.connect(lambda: AboutWindow(dark_mode=self.action_dark_mode.isChecked()).exec()) # Displays the about dialog
 
         # radio button
-        self.radio_mongo_cloud.toggled.connect(self.toggle_line_cluster)
+        self.radio_mongo_cloud.toggled.connect(self.toggle_line_cluster) # MongoDB Cloud radio button is toggled
 
-    def toggle_line_cluster(self,checked):
+    def toggle_line_cluster(self,checked): # performed when MongoDB Cloud radio button is toggled
         self.line_cluster.setEnabled(checked)
 
-    def mongo_send(self): # sends data to MongoDB
+    def mongo_send(self): # sends data to MongoDB (send button is pressed)
         db_collection = self.line_collection.text()
         id = datetime.datetime.now().strftime("%m%d%Y%H%M%S")
 
@@ -84,7 +84,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
 
         self.clear_fields()
 
-    def mongo_update(self): # updates data in MongoDB
+    def mongo_update(self): # updates data in MongoDB (update button is pressed)
         db_collection = self.line_collection.text()
         # Get the selected row from the table
         selected_row = self.table.currentRow()  # Get the selected row index
@@ -134,7 +134,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         
         self.table.resizeColumnsToContents()
 
-    def mongo_query(self): # queries data from MongoDB
+    def mongo_query(self): # queries data from MongoDB (query button is pressed)
         db_collection = self.line_collection.text()
         self.initialize_table()
 
@@ -168,7 +168,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         else:
             print("MongoDB is not connected. Cannot query data.")
 
-    def mongo_delete(self): # deletes data from MongoDB
+    def mongo_delete(self): # deletes data from MongoDB (delete button is pressed)
         db_collection = self.line_collection.text()
 
         # Get the selected rows from the table
@@ -206,16 +206,16 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         else:
             print("No documents found to delete in MongoDB")
 
-    def mongo_search(self): # searches data in MongoDB
+    def mongo_search(self): # searches data in MongoDB (search button is pressed)
         db_collection = self.line_collection.text()
         firstname_search = self.line_firstname_search.text()
         lastname_search = self.line_lastname_search.text()
 
         query = {}
         if firstname_search:
-            query["Name.First Name"] = firstname_search
+            query["Name.First Name"] = {"$regex": firstname_search, "$options": "i"} # case-insensitive search
         if lastname_search:
-            query["Name.Last Name"] = lastname_search
+            query["Name.Last Name"] = {"$regex": lastname_search, "$options": "i"} # case-insensitive search
 
         self.initialize_table()
 
@@ -251,7 +251,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         else:
             print("MongoDB is not connected. Cannot query data.")
 
-    def connect_to_mongo(self): # connects to MongoDB
+    def connect_to_mongo(self): # connects to MongoDB (connect button is pressed)
         server_url = self.line_server.text()
         username = self.line_username.text()
         password = self.line_password.text()
@@ -273,7 +273,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         
         self.mongo_db.connect()  # Try to connect
 
-        self.mongo_query()
+        #self.mongo_query()
 
     def initialize_table(self):
         self.table.setRowCount(0) # clears the table
@@ -352,6 +352,8 @@ class MongoDB: # Connect to MongoDB Cloud
             if self.parent:
                 self.parent.label_connection.setText("Connected to MongoDB")
             print("Ping to MongoDB server successful")
+
+            self.parent.mongo_query()
             
         except pymongo.errors.OperationFailure as e:
             if self.parent:
