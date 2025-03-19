@@ -2,9 +2,10 @@ import sys
 import qdarkstyle
 import datetime
 import pymongo
+import csv
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
-from PySide6.QtWidgets import QApplication, QMainWindow, QDialog, QTableWidget, QTableWidgetItem, QMessageBox
+from PySide6.QtWidgets import QApplication, QMainWindow, QDialog, QTableWidget, QTableWidgetItem, QMessageBox, QFileDialog
 from PySide6.QtCore import QSettings
 from main_ui import Ui_MainWindow as main_ui
 from about_ui import Ui_Dialog as about_ui
@@ -27,6 +28,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         self.button_delete.clicked.connect(self.mongo_delete) # Delete button is pressed
         self.button_connect.clicked.connect(self.connect_to_mongo) # Connect button is pressed
         self.button_search.clicked.connect(self.mongo_search) # Search button is pressed
+        self.button_csv.clicked.connect(self.export_to_csv) # Export to CSV button is pressed
 
         # menubar
         self.action_dark_mode.toggled.connect(self.dark_mode) # Dark mode is toggled
@@ -250,6 +252,34 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
 
         else:
             print("MongoDB is not connected. Cannot query data.")
+
+    def export_to_csv(self):  # exports data to CSV (export to CSV button is pressed)
+        self.filename = QFileDialog.getSaveFileName(self, 'Export File', '', 'Data File (*.csv)')
+
+        if not self.filename[0]:
+            return
+
+        try:
+            with open(self.filename[0], 'w', newline='') as file:
+                writer = csv.writer(file)
+                
+                # Write the header row (column names from the table)
+                headers = [self.table.horizontalHeaderItem(col).text() for col in range(self.table.columnCount())]
+                writer.writerow(headers)
+
+                # Write the data rows from the table
+                for row in range(self.table.rowCount()):
+                    row_data = []
+                    for col in range(self.table.columnCount()):
+                        item = self.table.item(row, col)
+                        # Append the text if the item exists, otherwise append an empty string
+                        row_data.append(item.text() if item else '')
+                    writer.writerow(row_data)
+
+            QMessageBox.information(self, "Export Successful", f"Table data exported to {self.filename[0]}")
+        
+        except Exception as e:
+            QMessageBox.critical(self, "Export Error", f"Failed to export to CSV: {str(e)}")
 
     def connect_to_mongo(self): # connects to MongoDB (connect button is pressed)
         server_url = self.line_server.text()

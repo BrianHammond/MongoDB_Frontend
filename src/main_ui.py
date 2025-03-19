@@ -27,7 +27,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1062, 794)
+        MainWindow.resize(957, 787)
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -267,13 +267,30 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout_5)
 
+        self.horizontalLayout_7 = QHBoxLayout()
+        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
         self.button_search = QPushButton(self.groupBox_3)
         self.button_search.setObjectName(u"button_search")
         sizePolicy2.setHeightForWidth(self.button_search.sizePolicy().hasHeightForWidth())
         self.button_search.setSizePolicy(sizePolicy2)
         self.button_search.setMinimumSize(QSize(100, 0))
 
-        self.verticalLayout.addWidget(self.button_search)
+        self.horizontalLayout_7.addWidget(self.button_search)
+
+        self.button_csv = QPushButton(self.groupBox_3)
+        self.button_csv.setObjectName(u"button_csv")
+        sizePolicy2.setHeightForWidth(self.button_csv.sizePolicy().hasHeightForWidth())
+        self.button_csv.setSizePolicy(sizePolicy2)
+        self.button_csv.setMinimumSize(QSize(100, 0))
+
+        self.horizontalLayout_7.addWidget(self.button_csv)
+
+        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_7.addItem(self.horizontalSpacer_4)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout_7)
 
 
         self.verticalLayout_4.addWidget(self.groupBox_3)
@@ -293,7 +310,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1062, 22))
+        self.menubar.setGeometry(QRect(0, 0, 957, 22))
         self.menuHelp = QMenu(self.menubar)
         self.menuHelp.setObjectName(u"menuHelp")
         self.menuSettings = QMenu(self.menubar)
@@ -304,7 +321,9 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         QWidget.setTabOrder(self.line_server, self.line_username)
         QWidget.setTabOrder(self.line_username, self.line_password)
-        QWidget.setTabOrder(self.line_password, self.line_database)
+        QWidget.setTabOrder(self.line_password, self.line_cluster)
+        QWidget.setTabOrder(self.line_cluster, self.radio_mongo_cloud)
+        QWidget.setTabOrder(self.radio_mongo_cloud, self.line_database)
         QWidget.setTabOrder(self.line_database, self.line_collection)
         QWidget.setTabOrder(self.line_collection, self.button_connect)
         QWidget.setTabOrder(self.button_connect, self.line_firstname)
@@ -323,7 +342,8 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.button_query, self.line_firstname_search)
         QWidget.setTabOrder(self.line_firstname_search, self.line_lastname_search)
         QWidget.setTabOrder(self.line_lastname_search, self.button_search)
-        QWidget.setTabOrder(self.button_search, self.table)
+        QWidget.setTabOrder(self.button_search, self.button_csv)
+        QWidget.setTabOrder(self.button_csv, self.table)
 
         self.menubar.addAction(self.menuSettings.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
@@ -393,6 +413,7 @@ class Ui_MainWindow(object):
         self.button_search.setStatusTip(QCoreApplication.translate("MainWindow", u"Search MongoDB", None))
 #endif // QT_CONFIG(statustip)
         self.button_search.setText(QCoreApplication.translate("MainWindow", u"Search", None))
+        self.button_csv.setText(QCoreApplication.translate("MainWindow", u"Export to CSV", None))
         self.label_connection.setText(QCoreApplication.translate("MainWindow", u"MongoDB Connection Status Label", None))
         self.menuHelp.setTitle(QCoreApplication.translate("MainWindow", u"Help", None))
         self.menuSettings.setTitle(QCoreApplication.translate("MainWindow", u"Settings", None))
