@@ -1,6 +1,5 @@
 import sys
 import qdarkstyle
-import datetime
 import pymongo
 import csv
 from pymongo import MongoClient
@@ -10,6 +9,7 @@ from PySide6.QtCore import QSettings
 from main_ui import Ui_MainWindow as main_ui
 from about_ui import Ui_Dialog as about_ui
 from cryptography.fernet import Fernet
+from bson.objectid import ObjectId
 
 class MainWindow(QMainWindow, main_ui): # used to display the main user interface
     def __init__(self):
@@ -41,7 +41,6 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
 
     def mongo_send(self): # sends data to MongoDB (send button is pressed)
         db_collection = self.line_collection.text()
-        id = datetime.datetime.now().strftime("%m%d%Y%H%M%S")
 
         # Get the values from the QLineEdits
         firstname = self.line_firstname.text()
@@ -54,12 +53,8 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         country = self.line_country.text()
         misc = self.line_misc.text()
 
-        row = self.table.rowCount()
-        self.populate_table(row, id, firstname, middlename, lastname, age, title, address1, address2, country, misc)
-
         # Prepare the data dictionary
         data = {
-            "_id": id,
             "Name": {
                 "First Name": firstname,
                 "Middle Name": middlename,
@@ -78,7 +73,11 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         # Insert data into MongoDB
         if self.mongo_db.is_connected:
             collection = self.mongo_db.db[db_collection]
-            collection.insert_one(data)
+            result = collection.insert_one(data)
+            inserted_id = result.inserted_id
+
+            row = self.table.rowCount()  # Get the next empty row index
+            self.populate_table(row, str(inserted_id), firstname, middlename, lastname, age, title, address1, address2, country, misc)
         else:
             print("MongoDB is not connected. Cannot insert data.")
 
@@ -168,7 +167,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         else:
             print("MongoDB is not connected. Cannot query data.")
 
-    def mongo_delete(self): # deletes data from MongoDB (delete button is pressed)
+    def mongo_delete(self):  # deletes data from MongoDB (delete button is pressed)
         db_collection = self.line_collection.text()
 
         # Get the selected rows from the table
@@ -178,8 +177,8 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         if not selected_rows:
             return  # Early return if no rows are selected
 
-        # Collect IDs from the selected rows
-        ids_to_delete = {self.table.item(index.row(), 0).text() for index in selected_rows}
+        # Collect IDs from the selected rows and convert them to ObjectId
+        ids_to_delete = {ObjectId(self.table.item(index.row(), 0).text()) for index in selected_rows}
 
         # Confirm deletion with the user (optional)
         confirmation = QMessageBox.question(self, "Confirm Deletion",
@@ -203,6 +202,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
             # Remove the rows from the table UI
             for row in sorted([index.row() for index in selected_rows], reverse=True):
                 self.table.removeRow(row)
+            print(f"Deleted {result.deleted_count} documents from MongoDB")
         else:
             print("No documents found to delete in MongoDB")
 
@@ -280,7 +280,6 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
             QMessageBox.critical(self, "Export Error", f"Failed to export to CSV: {str(e)}")
 
     def import_csv(self):  # imports data from CSV (import CSV button is pressed)
-        # Open a file dialog to select the CSV file
         filename, _ = QFileDialog.getOpenFileName(self, 'Import CSV File', '', 'CSV Files (*.csv)')
         
         if not filename:
@@ -299,21 +298,20 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
             with open(filename, 'r', newline='') as csvfile:
                 reader = csv.DictReader(csvfile)
                 
-                # Check if the CSV has the expected headers
-                expected_headers = {'ID', 'First Name', 'Middle Name', 'Last Name', 'Age', 'Title', 
-                                'Address 1', 'Address 2', 'Country', 'Misc'}
+                # Check if the CSV has the expected headers (ID is optional now)
+                expected_headers = {'First Name', 'Middle Name', 'Last Name', 'Age', 'Title', 
+                                    'Address 1', 'Address 2', 'Country', 'Misc'}
                 if not all(header in reader.fieldnames for header in expected_headers):
                     QMessageBox.warning(self, "CSV Error", 
-                                    "CSV file must contain headers: ID, First Name, Middle Name, Last Name, "
-                                    "Age, Title, Address 1, Address 2, Country, Misc")
+                                        "CSV file must contain headers: First Name, Middle Name, Last Name, "
+                                        "Age, Title, Address 1, Address 2, Country, Misc")
                     return
 
                 # Prepare a list to hold all documents
                 documents = []
                 for row in reader:
-                    # Structure the data to match your MongoDB schema
+                    # Structure the data to match your MongoDB schema (no _id unless you want to keep it)
                     data = {
-                        "_id": row['ID'] if row['ID'] else datetime.datetime.now().strftime("%m%d%Y%H%M%S"),
                         "Name": {
                             "First Name": row['First Name'],
                             "Middle Name": row['Middle Name'],
@@ -333,9 +331,9 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
                 # Insert all documents into MongoDB
                 if documents:
                     collection = self.mongo_db.db[db_collection]
-                    result = collection.insert_many(documents)
+                    result = collection.insert_many(documents)  # MongoDB generates _ids
                     QMessageBox.information(self, "Import Successful", 
-                                        f"Successfully imported {len(result.inserted_ids)} records into {db_collection}.")
+                                            f"Successfully imported {len(result.inserted_ids)} records into {db_collection}.")
                     
                     # Refresh the table to show the imported data
                     self.mongo_query()
