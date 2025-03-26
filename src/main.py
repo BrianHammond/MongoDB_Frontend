@@ -298,19 +298,32 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
             with open(filename, 'r', newline='') as csvfile:
                 reader = csv.DictReader(csvfile)
                 
-                # Check if the CSV has the expected headers (ID is optional now)
-                expected_headers = {'First Name', 'Middle Name', 'Last Name', 'Age', 'Title', 
+                # Required headers (ID is optional)
+                required_headers = {'First Name', 'Middle Name', 'Last Name', 'Age', 'Title', 
                                     'Address 1', 'Address 2', 'Country', 'Misc'}
-                if not all(header in reader.fieldnames for header in expected_headers):
+                if not all(header in reader.fieldnames for header in required_headers):
                     QMessageBox.warning(self, "CSV Error", 
                                         "CSV file must contain headers: First Name, Middle Name, Last Name, "
                                         "Age, Title, Address 1, Address 2, Country, Misc")
                     return
 
-                # Prepare a list to hold all documents
+                # Get existing IDs from MongoDB
+                collection = self.mongo_db.db[db_collection]
+                existing_ids = {str(doc['_id']) for doc in collection.find({}, {'_id': 1})}
+
+                # Prepare a list to hold new documents
                 documents = []
+                skipped_count = 0
+
                 for row in reader:
-                    # Structure the data to match your MongoDB schema (no _id unless you want to keep it)
+                    csv_id = row.get('ID', '').strip()  # Get ID if present, default to empty string
+                    
+                    # If ID is provided and exists in MongoDB, skip this row
+                    if csv_id and csv_id in existing_ids:
+                        skipped_count += 1
+                        continue
+
+                    # Structure the data to match your MongoDB schema
                     data = {
                         "Name": {
                             "First Name": row['First Name'],
@@ -326,19 +339,29 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
                         },
                         "Misc": row['Misc']
                     }
+                    
+                    # If a valid ID is provided, include it in the document
+                    if csv_id:
+                        try:
+                            data["_id"] = ObjectId(csv_id)  # Convert to ObjectId if present
+                        except ValueError:
+                            QMessageBox.warning(self, "Invalid ID", 
+                                                f"Skipping row with invalid ID '{csv_id}'. Importing without ID.")
+                            # If ID is invalid, proceed without setting _id (MongoDB will generate one)
+
                     documents.append(data)
 
-                # Insert all documents into MongoDB
+                # Insert new documents into MongoDB
                 if documents:
-                    collection = self.mongo_db.db[db_collection]
-                    result = collection.insert_many(documents)  # MongoDB generates _ids
+                    result = collection.insert_many(documents)
                     QMessageBox.information(self, "Import Successful", 
-                                            f"Successfully imported {len(result.inserted_ids)} records into {db_collection}.")
-                    
+                                            f"Imported {len(result.inserted_ids)} new records into {db_collection}. "
+                                            f"Skipped {skipped_count} existing records.")
                     # Refresh the table to show the imported data
                     self.mongo_query()
                 else:
-                    QMessageBox.information(self, "Import Info", "No data found in the CSV file to import.")
+                    QMessageBox.information(self, "Import Info", 
+                                            f"No new data to import. Skipped {skipped_count} existing records.")
 
         except FileNotFoundError:
             QMessageBox.critical(self, "File Error", f"Could not find the file: {filename}")
