@@ -27,7 +27,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(957, 787)
+        MainWindow.resize(936, 787)
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -100,7 +100,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
         self.line_database = QLineEdit(self.groupBox_2)
         self.line_database.setObjectName(u"line_database")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         sizePolicy2.setHorizontalStretch(0)
         sizePolicy2.setVerticalStretch(0)
         sizePolicy2.setHeightForWidth(self.line_database.sizePolicy().hasHeightForWidth())
@@ -119,15 +119,14 @@ class Ui_MainWindow(object):
 
         self.button_connect = QPushButton(self.groupBox_2)
         self.button_connect.setObjectName(u"button_connect")
-        sizePolicy2.setHeightForWidth(self.button_connect.sizePolicy().hasHeightForWidth())
-        self.button_connect.setSizePolicy(sizePolicy2)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.button_connect.sizePolicy().hasHeightForWidth())
+        self.button_connect.setSizePolicy(sizePolicy3)
         self.button_connect.setMinimumSize(QSize(100, 0))
 
         self.horizontalLayout_6.addWidget(self.button_connect)
-
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout_6.addItem(self.horizontalSpacer_2)
 
 
         self.verticalLayout_2.addLayout(self.horizontalLayout_6)
@@ -201,32 +200,32 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.button_send = QPushButton(self.groupBox)
         self.button_send.setObjectName(u"button_send")
-        sizePolicy2.setHeightForWidth(self.button_send.sizePolicy().hasHeightForWidth())
-        self.button_send.setSizePolicy(sizePolicy2)
+        sizePolicy3.setHeightForWidth(self.button_send.sizePolicy().hasHeightForWidth())
+        self.button_send.setSizePolicy(sizePolicy3)
         self.button_send.setMinimumSize(QSize(100, 0))
 
         self.horizontalLayout_3.addWidget(self.button_send)
 
         self.button_update = QPushButton(self.groupBox)
         self.button_update.setObjectName(u"button_update")
-        sizePolicy2.setHeightForWidth(self.button_update.sizePolicy().hasHeightForWidth())
-        self.button_update.setSizePolicy(sizePolicy2)
+        sizePolicy3.setHeightForWidth(self.button_update.sizePolicy().hasHeightForWidth())
+        self.button_update.setSizePolicy(sizePolicy3)
         self.button_update.setMinimumSize(QSize(100, 0))
 
         self.horizontalLayout_3.addWidget(self.button_update)
 
         self.button_delete = QPushButton(self.groupBox)
         self.button_delete.setObjectName(u"button_delete")
-        sizePolicy2.setHeightForWidth(self.button_delete.sizePolicy().hasHeightForWidth())
-        self.button_delete.setSizePolicy(sizePolicy2)
+        sizePolicy3.setHeightForWidth(self.button_delete.sizePolicy().hasHeightForWidth())
+        self.button_delete.setSizePolicy(sizePolicy3)
         self.button_delete.setMinimumSize(QSize(100, 0))
 
         self.horizontalLayout_3.addWidget(self.button_delete)
 
         self.button_query = QPushButton(self.groupBox)
         self.button_query.setObjectName(u"button_query")
-        sizePolicy2.setHeightForWidth(self.button_query.sizePolicy().hasHeightForWidth())
-        self.button_query.setSizePolicy(sizePolicy2)
+        sizePolicy3.setHeightForWidth(self.button_query.sizePolicy().hasHeightForWidth())
+        self.button_query.setSizePolicy(sizePolicy3)
         self.button_query.setMinimumSize(QSize(100, 0))
 
         self.horizontalLayout_3.addWidget(self.button_query)
@@ -267,24 +266,24 @@ class Ui_MainWindow(object):
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
         self.button_search = QPushButton(self.groupBox_3)
         self.button_search.setObjectName(u"button_search")
-        sizePolicy2.setHeightForWidth(self.button_search.sizePolicy().hasHeightForWidth())
-        self.button_search.setSizePolicy(sizePolicy2)
+        sizePolicy3.setHeightForWidth(self.button_search.sizePolicy().hasHeightForWidth())
+        self.button_search.setSizePolicy(sizePolicy3)
         self.button_search.setMinimumSize(QSize(100, 0))
 
         self.horizontalLayout_7.addWidget(self.button_search)
 
         self.button_import_csv = QPushButton(self.groupBox_3)
         self.button_import_csv.setObjectName(u"button_import_csv")
-        sizePolicy2.setHeightForWidth(self.button_import_csv.sizePolicy().hasHeightForWidth())
-        self.button_import_csv.setSizePolicy(sizePolicy2)
+        sizePolicy3.setHeightForWidth(self.button_import_csv.sizePolicy().hasHeightForWidth())
+        self.button_import_csv.setSizePolicy(sizePolicy3)
         self.button_import_csv.setMinimumSize(QSize(100, 0))
 
         self.horizontalLayout_7.addWidget(self.button_import_csv)
 
         self.button_export_csv = QPushButton(self.groupBox_3)
         self.button_export_csv.setObjectName(u"button_export_csv")
-        sizePolicy2.setHeightForWidth(self.button_export_csv.sizePolicy().hasHeightForWidth())
-        self.button_export_csv.setSizePolicy(sizePolicy2)
+        sizePolicy3.setHeightForWidth(self.button_export_csv.sizePolicy().hasHeightForWidth())
+        self.button_export_csv.setSizePolicy(sizePolicy3)
         self.button_export_csv.setMinimumSize(QSize(100, 0))
 
         self.horizontalLayout_7.addWidget(self.button_export_csv)
@@ -314,7 +313,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 957, 22))
+        self.menubar.setGeometry(QRect(0, 0, 936, 22))
         self.menuHelp = QMenu(self.menubar)
         self.menuHelp.setObjectName(u"menuHelp")
         self.menuSettings = QMenu(self.menubar)
