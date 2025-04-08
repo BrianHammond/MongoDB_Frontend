@@ -5,8 +5,7 @@ import csv
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 from PySide6.QtWidgets import QApplication, QMainWindow, QDialog, QTableWidget, QTableWidgetItem, QMessageBox, QFileDialog
-from PySide6.QtCore import QSettings
-from PySide6.QtCore import QDate
+from PySide6.QtCore import QSettings, QDate
 from main_ui import Ui_MainWindow as main_ui
 from about_ui import Ui_Dialog as about_ui
 from cryptography.fernet import Fernet
