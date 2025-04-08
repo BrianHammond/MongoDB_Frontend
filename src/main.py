@@ -6,6 +6,7 @@ from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 from PySide6.QtWidgets import QApplication, QMainWindow, QDialog, QTableWidget, QTableWidgetItem, QMessageBox, QFileDialog
 from PySide6.QtCore import QSettings
+from PySide6.QtCore import QDate
 from main_ui import Ui_MainWindow as main_ui
 from about_ui import Ui_Dialog as about_ui
 from cryptography.fernet import Fernet
@@ -20,6 +21,18 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         self.mongo_db = MongoDB()  # Initialize MongoDB instance
 
         self.label_connection.setText("Not Connected to MongoDB")
+
+        # Populate the department combo box
+        departments = [
+            "Human Resources",
+            "Engineering",
+            "Sales",
+            "Marketing",
+            "Finance",
+            "IT",
+            "Operations"
+        ]
+        self.combobox_department.addItems(departments)
 
         # buttons
         self.button_send.clicked.connect(self.mongo_send) # Send button is pressed
@@ -39,19 +52,22 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         # radio button
         self.radio_mongo_cloud.toggled.connect(lambda checked: self.line_cluster.setEnabled(checked)) # Enables the cluster field when MongoDB Cloud radio button is toggled
 
+        self.clear_fields()  # Clear input fields on startup
+
     def mongo_send(self): # sends data to MongoDB (send button is pressed)
         db_collection = self.line_collection.text()
 
         # Get the values from the QLineEdits
-        firstname = self.line_firstname.text()
-        middlename = self.line_middlename.text()
-        lastname = self.line_lastname.text()
-        age = self.line_age.text()
-        title = self.line_title.text()
-        address1 = self.line_address1.text()
-        address2 = self.line_address2.text()
-        country = self.line_country.text()
-        misc = self.line_misc.text()
+        firstname = self.line_firstname.text().strip()
+        middlename = self.line_middlename.text().strip()
+        lastname = self.line_lastname.text().strip()
+        joindate = self.join_date.date().toString("MM-dd-yyyy")
+        department = self.combobox_department.currentText()
+        title = self.line_title.text().strip()
+        address1 = self.line_address1.text().strip()
+        address2 = self.line_address2.text().strip()
+        country = self.line_country.text().strip()
+        misc = self.line_misc.text().strip()
 
         # Prepare the data dictionary
         data = {
@@ -60,7 +76,8 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
                 "Middle Name": middlename,
                 "Last Name": lastname
             },
-            "Age": age,
+            "Joined Date": joindate,
+            "Department": department,
             "Title": title,
             "Address": {
                 "Address 1": address1,
@@ -77,7 +94,7 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
             inserted_id = result.inserted_id
 
             row = self.table.rowCount()  # Get the next empty row index
-            self.populate_table(row, str(inserted_id), firstname, middlename, lastname, age, title, address1, address2, country, misc)
+            self.populate_table(row, str(inserted_id), firstname, middlename, lastname, title, joindate, department, address1, address2, country, misc)
         else:
             print("MongoDB is not connected. Cannot insert data.")
 
@@ -88,49 +105,68 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
         # Get the selected row from the table
         selected_row = self.table.currentRow()  # Get the selected row index
 
-        if selected_row != -1:  # If a row is selected
-            # Retrieve the data from the table
-            id = self.table.item(selected_row, 0).text()  # Get the ID from the first column
-            firstname = self.table.item(selected_row, 1).text()
-            middlename = self.table.item(selected_row, 2).text()
-            lastname = self.table.item(selected_row, 3).text()
-            age = self.table.item(selected_row, 4).text()
-            title = self.table.item(selected_row, 5).text()
-            address1 = self.table.item(selected_row, 6).text()
-            address2 = self.table.item(selected_row, 7).text()
-            country = self.table.item(selected_row, 8).text()
-            misc = self.table.item(selected_row, 9).text()
+        if selected_row == -1:  # If no row is selected
+            QMessageBox.warning(self, "Selection Error", "Please select a row to update")
+            return
 
-            # Prepare the updated data
-            updated_data = {
-                "Name": {
-                    "First Name": firstname,
-                    "Middle Name": middlename,
-                    "Last Name": lastname
-                },
-                "Age": age,
-                "Title": title,
-                "Address": {
-                    "Address 1": address1,
-                    "Address 2": address2,
-                    "Country": country
-                },
-                "Misc": misc
-            }
+        # Retrieve the data from the table
+        id_str = self.table.item(selected_row, 0).text()  # Get the ID as string
+        try:
+            # Convert string ID to ObjectId
+            object_id = ObjectId(id_str)
+        except Exception as e:
+            print(f"Invalid ID format: {e}")
+            QMessageBox.critical(self, "Error", "Invalid ID format in selected row")
+            return
 
-            # Update the data in MongoDB
-            if self.mongo_db.is_connected:
-                collection = self.mongo_db.db[db_collection]
-                # Update the document with the given ID
-                result = collection.update_one({"_id": id}, {"$set": updated_data})
+        firstname = self.table.item(selected_row, 1).text()
+        middlename = self.table.item(selected_row, 2).text()
+        lastname = self.table.item(selected_row, 3).text()
+        title = self.table.item(selected_row, 4).text()
+        joindate = self.table.item(selected_row, 5).text()
+        department = self.table.item(selected_row, 6).text()
+        address1 = self.table.item(selected_row, 7).text()
+        address2 = self.table.item(selected_row, 8).text()
+        country = self.table.item(selected_row, 9).text()
+        misc = self.table.item(selected_row, 10).text()
 
-                if result.matched_count > 0:
-                    print("Document updated successfully in MongoDB")
-                else:
-                    print("No matching document found to update")
+        # Prepare the updated data
+        updated_data = {
+            "Name": {
+                "First Name": firstname,
+                "Middle Name": middlename,
+                "Last Name": lastname
+            },
+            "Joined Date": joindate,
+            "Department": department,
+            "Title": title,
+            "Address": {
+                "Address 1": address1,
+                "Address 2": address2,
+                "Country": country
+            },
+            "Misc": misc
+        }
+
+        # Update the data in MongoDB
+        if self.mongo_db.is_connected:
+            collection = self.mongo_db.db[db_collection]
+            # Update the document with the given ObjectId
+            result = collection.update_one(
+                {"_id": object_id},  # Use ObjectId instead of string
+                {"$set": updated_data}
+            )
+
+            if result.matched_count > 0:
+                print(f"Document updated successfully in MongoDB. Modified count: {result.modified_count}")
+                QMessageBox.information(self, "Success", "Record updated successfully")
             else:
-                print("MongoDB is not connected. Cannot update data.")
-        
+                print("No matching document found to update")
+                QMessageBox.warning(self, "Update Failed", "No matching record found in database")
+        else:
+            print("MongoDB is not connected. Cannot update data.")
+            QMessageBox.warning(self, "Connection Error", "Not connected to MongoDB")
+
         self.table.resizeColumnsToContents()
 
     def mongo_query(self): # queries data from MongoDB (query button is pressed)
@@ -154,12 +190,13 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
                 self.table.setItem(row, 1, QTableWidgetItem(doc.get('Name', {}).get('First Name', '')))
                 self.table.setItem(row, 2, QTableWidgetItem(doc.get('Name', {}).get('Middle Name', '')))
                 self.table.setItem(row, 3, QTableWidgetItem(doc.get('Name', {}).get('Last Name', '')))
-                self.table.setItem(row, 4, QTableWidgetItem(str(doc.get('Age', ''))))
-                self.table.setItem(row, 5, QTableWidgetItem(doc.get('Title', '')))
-                self.table.setItem(row, 6, QTableWidgetItem(doc.get('Address', {}).get('Address 1', '')))
-                self.table.setItem(row, 7, QTableWidgetItem(doc.get('Address', {}).get('Address 2', '')))
-                self.table.setItem(row, 8, QTableWidgetItem(doc.get('Address', {}).get('Country', '')))
-                self.table.setItem(row, 9, QTableWidgetItem(doc.get('Misc', '')))
+                self.table.setItem(row, 4, QTableWidgetItem(doc.get('Title', '')))
+                self.table.setItem(row, 5, QTableWidgetItem(doc.get('Joined Date', '')))
+                self.table.setItem(row, 6, QTableWidgetItem(doc.get('Department', '')))
+                self.table.setItem(row, 7, QTableWidgetItem(doc.get('Address', {}).get('Address 1', '')))
+                self.table.setItem(row, 8, QTableWidgetItem(doc.get('Address', {}).get('Address 2', '')))
+                self.table.setItem(row, 9, QTableWidgetItem(doc.get('Address', {}).get('Country', '')))
+                self.table.setItem(row, 10, QTableWidgetItem(doc.get('Misc', '')))
 
             self.table.resizeColumnsToContents()
             self.table.resizeRowsToContents()
@@ -238,12 +275,13 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
                 self.table.setItem(row, 1, QTableWidgetItem(doc.get('Name', {}).get('First Name', '')))
                 self.table.setItem(row, 2, QTableWidgetItem(doc.get('Name', {}).get('Middle Name', '')))
                 self.table.setItem(row, 3, QTableWidgetItem(doc.get('Name', {}).get('Last Name', '')))
-                self.table.setItem(row, 4, QTableWidgetItem(str(doc.get('Age', ''))))
-                self.table.setItem(row, 5, QTableWidgetItem(doc.get('Title', '')))
-                self.table.setItem(row, 6, QTableWidgetItem(doc.get('Address', {}).get('Address 1', '')))
-                self.table.setItem(row, 7, QTableWidgetItem(doc.get('Address', {}).get('Address 2', '')))
-                self.table.setItem(row, 8, QTableWidgetItem(doc.get('Address', {}).get('Country', '')))
-                self.table.setItem(row, 9, QTableWidgetItem(doc.get('Misc', '')))
+                self.table.setItem(row, 4, QTableWidgetItem(doc.get('Title', '')))
+                self.table.setItem(row, 5, QTableWidgetItem(doc.get('Joined Date', '')))
+                self.table.setItem(row, 6, QTableWidgetItem(doc.get('Department', '')))
+                self.table.setItem(row, 7, QTableWidgetItem(doc.get('Address', {}).get('Address 1', '')))
+                self.table.setItem(row, 8, QTableWidgetItem(doc.get('Address', {}).get('Address 2', '')))
+                self.table.setItem(row, 9, QTableWidgetItem(doc.get('Address', {}).get('Country', '')))
+                self.table.setItem(row, 10, QTableWidgetItem(doc.get('Misc', '')))
 
             self.table.resizeColumnsToContents()
             self.table.resizeRowsToContents()
@@ -299,12 +337,11 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
                 reader = csv.DictReader(csvfile)
                 
                 # Required headers (ID is optional)
-                required_headers = {'First Name', 'Middle Name', 'Last Name', 'Age', 'Title', 
-                                    'Address 1', 'Address 2', 'Country', 'Misc'}
+                required_headers = {'First Name', 'Middle Name', 'Last Name', 'Title', 'Join Date', 'Department', 'Address 1', 'Address 2', 'Country', 'Misc'}
                 if not all(header in reader.fieldnames for header in required_headers):
                     QMessageBox.warning(self, "CSV Error", 
-                                        "CSV file must contain headers: First Name, Middle Name, Last Name, "
-                                        "Age, Title, Address 1, Address 2, Country, Misc")
+                                        "CSV file must contain headers: "
+                                        "First Name, Middle Name, Last Name, Title, Join Date, Department, Address 1, Address 2, Country, Misc")
                     return
 
                 # Get existing IDs from MongoDB
@@ -330,8 +367,9 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
                             "Middle Name": row['Middle Name'],
                             "Last Name": row['Last Name']
                         },
-                        "Age": row['Age'],
                         "Title": row['Title'],
+                        "Joined Date": row['Join Date'],
+                        "Department": row['Department'],
                         "Address": {
                             "Address 1": row['Address 1'],
                             "Address 2": row['Address 2'],
@@ -394,30 +432,32 @@ class MainWindow(QMainWindow, main_ui): # used to display the main user interfac
 
     def initialize_table(self):
         self.table.setRowCount(0) # clears the table
-        self.table.setColumnCount(10)
-        self.table.setHorizontalHeaderLabels(['ID', 'First Name', 'Middle Name', 'Last Name', 'Age', 'Title', 'Address 1', 'Address 2', 'Country', 'Misc'])
+        self.table.setColumnCount(11)
+        self.table.setHorizontalHeaderLabels(['ID', 'First Name', 'Middle Name', 'Last Name', 'Title', 'Join Date', 'Department', 'Address 1', 'Address 2', 'Country', 'Misc'])
         self.table.setSelectionMode(QTableWidget.MultiSelection)
 
-    def populate_table(self, row, id, firstname, middlename, lastname, age, title, address1, address2, country, misc):
+    def populate_table(self, row, id, firstname, middlename, lastname, title, joindate, department, address1, address2, country, misc):
         self.table.insertRow(row)
         self.table.setItem(row, 0, QTableWidgetItem(str(id)))
         self.table.setItem(row, 1, QTableWidgetItem(firstname))
         self.table.setItem(row, 2, QTableWidgetItem(middlename))
         self.table.setItem(row, 3, QTableWidgetItem(lastname))
-        self.table.setItem(row, 4, QTableWidgetItem(age))
-        self.table.setItem(row, 5, QTableWidgetItem(title))
-        self.table.setItem(row, 6, QTableWidgetItem(address1))
-        self.table.setItem(row, 7, QTableWidgetItem(address2))
-        self.table.setItem(row, 8, QTableWidgetItem(country))
-        self.table.setItem(row, 9, QTableWidgetItem(misc))
+        self.table.setItem(row, 4, QTableWidgetItem(title))
+        self.table.setItem(row, 5, QTableWidgetItem(joindate))
+        self.table.setItem(row, 6, QTableWidgetItem(department))
+        self.table.setItem(row, 7, QTableWidgetItem(address1))
+        self.table.setItem(row, 8, QTableWidgetItem(address2))
+        self.table.setItem(row, 9, QTableWidgetItem(country))
+        self.table.setItem(row, 10, QTableWidgetItem(misc))
         self.table.resizeColumnsToContents()
         self.table.resizeRowsToContents()
 
     def clear_fields(self):
+        self.join_date.setDate(QDate.currentDate())
+        self.combobox_department.setCurrentIndex(0)
         self.line_firstname.clear()
         self.line_middlename.clear()
         self.line_lastname.clear()
-        self.line_age.clear()
         self.line_title.clear()
         self.line_address1.clear()
         self.line_address2.clear()
