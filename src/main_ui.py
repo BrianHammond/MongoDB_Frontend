@@ -27,7 +27,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1000, 813)
+        MainWindow.resize(999, 841)
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -46,8 +46,8 @@ class Ui_MainWindow(object):
         self.action_dark_mode.setCheckable(True)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.verticalLayout_4 = QVBoxLayout(self.centralwidget)
-        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.verticalLayout_5 = QVBoxLayout(self.centralwidget)
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.groupBox_2 = QGroupBox(self.centralwidget)
         self.groupBox_2.setObjectName(u"groupBox_2")
         self.verticalLayout_3 = QVBoxLayout(self.groupBox_2)
@@ -132,7 +132,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.addLayout(self.horizontalLayout_6)
 
 
-        self.verticalLayout_4.addWidget(self.groupBox_2)
+        self.verticalLayout_5.addWidget(self.groupBox_2)
 
         self.groupBox = QGroupBox(self.centralwidget)
         self.groupBox.setObjectName(u"groupBox")
@@ -157,63 +157,6 @@ class Ui_MainWindow(object):
 
 
         self.verticalLayout_2.addLayout(self.horizontalLayout)
-
-        self.horizontalLayout_2 = QHBoxLayout()
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.label = QLabel(self.groupBox)
-        self.label.setObjectName(u"label")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
-        sizePolicy4.setHorizontalStretch(0)
-        sizePolicy4.setVerticalStretch(0)
-        sizePolicy4.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
-        self.label.setSizePolicy(sizePolicy4)
-
-        self.horizontalLayout_2.addWidget(self.label)
-
-        self.join_date = QDateEdit(self.groupBox)
-        self.join_date.setObjectName(u"join_date")
-        sizePolicy3.setHeightForWidth(self.join_date.sizePolicy().hasHeightForWidth())
-        self.join_date.setSizePolicy(sizePolicy3)
-        self.join_date.setMinimumSize(QSize(120, 0))
-        self.join_date.setCalendarPopup(True)
-        self.join_date.setTimeSpec(Qt.TimeSpec.LocalTime)
-
-        self.horizontalLayout_2.addWidget(self.join_date)
-
-        self.horizontalSpacer_2 = QSpacerItem(30, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout_2.addItem(self.horizontalSpacer_2)
-
-        self.label_2 = QLabel(self.groupBox)
-        self.label_2.setObjectName(u"label_2")
-        sizePolicy4.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
-        self.label_2.setSizePolicy(sizePolicy4)
-
-        self.horizontalLayout_2.addWidget(self.label_2)
-
-        self.combobox_department = QComboBox(self.groupBox)
-        self.combobox_department.setObjectName(u"combobox_department")
-        sizePolicy3.setHeightForWidth(self.combobox_department.sizePolicy().hasHeightForWidth())
-        self.combobox_department.setSizePolicy(sizePolicy3)
-        self.combobox_department.setMinimumSize(QSize(150, 0))
-        self.combobox_department.setEditable(False)
-
-        self.horizontalLayout_2.addWidget(self.combobox_department)
-
-        self.horizontalSpacer_3 = QSpacerItem(30, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout_2.addItem(self.horizontalSpacer_3)
-
-        self.line_title = QLineEdit(self.groupBox)
-        self.line_title.setObjectName(u"line_title")
-        sizePolicy2.setHeightForWidth(self.line_title.sizePolicy().hasHeightForWidth())
-        self.line_title.setSizePolicy(sizePolicy2)
-        self.line_title.setMinimumSize(QSize(200, 0))
-
-        self.horizontalLayout_2.addWidget(self.line_title)
-
-
-        self.verticalLayout_2.addLayout(self.horizontalLayout_2)
 
         self.horizontalLayout_8 = QHBoxLayout()
         self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
@@ -240,10 +183,77 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_2.addWidget(self.line_misc)
 
+
+        self.verticalLayout_5.addWidget(self.groupBox)
+
+        self.groupBox_4 = QGroupBox(self.centralwidget)
+        self.groupBox_4.setObjectName(u"groupBox_4")
+        self.verticalLayout_4 = QVBoxLayout(self.groupBox_4)
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.label = QLabel(self.groupBox_4)
+        self.label.setObjectName(u"label")
+        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
+        self.label.setSizePolicy(sizePolicy4)
+
+        self.horizontalLayout_2.addWidget(self.label)
+
+        self.join_date = QDateEdit(self.groupBox_4)
+        self.join_date.setObjectName(u"join_date")
+        sizePolicy3.setHeightForWidth(self.join_date.sizePolicy().hasHeightForWidth())
+        self.join_date.setSizePolicy(sizePolicy3)
+        self.join_date.setMinimumSize(QSize(120, 0))
+        self.join_date.setCalendarPopup(True)
+        self.join_date.setTimeSpec(Qt.TimeSpec.LocalTime)
+
+        self.horizontalLayout_2.addWidget(self.join_date)
+
+        self.horizontalSpacer_2 = QSpacerItem(30, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_2.addItem(self.horizontalSpacer_2)
+
+        self.label_2 = QLabel(self.groupBox_4)
+        self.label_2.setObjectName(u"label_2")
+        sizePolicy4.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
+        self.label_2.setSizePolicy(sizePolicy4)
+
+        self.horizontalLayout_2.addWidget(self.label_2)
+
+        self.combobox_department = QComboBox(self.groupBox_4)
+        self.combobox_department.setObjectName(u"combobox_department")
+        sizePolicy3.setHeightForWidth(self.combobox_department.sizePolicy().hasHeightForWidth())
+        self.combobox_department.setSizePolicy(sizePolicy3)
+        self.combobox_department.setMinimumSize(QSize(150, 0))
+        self.combobox_department.setEditable(False)
+
+        self.horizontalLayout_2.addWidget(self.combobox_department)
+
+        self.horizontalSpacer_3 = QSpacerItem(30, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_2.addItem(self.horizontalSpacer_3)
+
+        self.line_title = QLineEdit(self.groupBox_4)
+        self.line_title.setObjectName(u"line_title")
+        sizePolicy2.setHeightForWidth(self.line_title.sizePolicy().hasHeightForWidth())
+        self.line_title.setSizePolicy(sizePolicy2)
+        self.line_title.setMinimumSize(QSize(200, 0))
+
+        self.horizontalLayout_2.addWidget(self.line_title)
+
+
+        self.verticalLayout_4.addLayout(self.horizontalLayout_2)
+
+
+        self.verticalLayout_5.addWidget(self.groupBox_4)
+
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.button_send = QPushButton(self.groupBox)
+        self.horizontalLayout_3.setContentsMargins(10, 0, 10, 0)
+        self.button_send = QPushButton(self.centralwidget)
         self.button_send.setObjectName(u"button_send")
         sizePolicy3.setHeightForWidth(self.button_send.sizePolicy().hasHeightForWidth())
         self.button_send.setSizePolicy(sizePolicy3)
@@ -251,7 +261,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_3.addWidget(self.button_send)
 
-        self.button_update = QPushButton(self.groupBox)
+        self.button_update = QPushButton(self.centralwidget)
         self.button_update.setObjectName(u"button_update")
         sizePolicy3.setHeightForWidth(self.button_update.sizePolicy().hasHeightForWidth())
         self.button_update.setSizePolicy(sizePolicy3)
@@ -259,7 +269,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_3.addWidget(self.button_update)
 
-        self.button_delete = QPushButton(self.groupBox)
+        self.button_delete = QPushButton(self.centralwidget)
         self.button_delete.setObjectName(u"button_delete")
         sizePolicy3.setHeightForWidth(self.button_delete.sizePolicy().hasHeightForWidth())
         self.button_delete.setSizePolicy(sizePolicy3)
@@ -267,7 +277,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_3.addWidget(self.button_delete)
 
-        self.button_query = QPushButton(self.groupBox)
+        self.button_query = QPushButton(self.centralwidget)
         self.button_query.setObjectName(u"button_query")
         sizePolicy3.setHeightForWidth(self.button_query.sizePolicy().hasHeightForWidth())
         self.button_query.setSizePolicy(sizePolicy3)
@@ -280,10 +290,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.addItem(self.horizontalSpacer)
 
 
-        self.verticalLayout_2.addLayout(self.horizontalLayout_3)
-
-
-        self.verticalLayout_4.addWidget(self.groupBox)
+        self.verticalLayout_5.addLayout(self.horizontalLayout_3)
 
         self.groupBox_3 = QGroupBox(self.centralwidget)
         self.groupBox_3.setObjectName(u"groupBox_3")
@@ -341,24 +348,24 @@ class Ui_MainWindow(object):
         self.verticalLayout.addLayout(self.horizontalLayout_7)
 
 
-        self.verticalLayout_4.addWidget(self.groupBox_3)
+        self.verticalLayout_5.addWidget(self.groupBox_3)
 
         self.table = QTableWidget(self.centralwidget)
         self.table.setObjectName(u"table")
         self.table.setRowCount(0)
         self.table.verticalHeader().setVisible(False)
 
-        self.verticalLayout_4.addWidget(self.table)
+        self.verticalLayout_5.addWidget(self.table)
 
         self.label_connection = QLabel(self.centralwidget)
         self.label_connection.setObjectName(u"label_connection")
 
-        self.verticalLayout_4.addWidget(self.label_connection)
+        self.verticalLayout_5.addWidget(self.label_connection)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1000, 22))
+        self.menubar.setGeometry(QRect(0, 0, 999, 22))
         self.menuHelp = QMenu(self.menubar)
         self.menuHelp.setObjectName(u"menuHelp")
         self.menuSettings = QMenu(self.menubar)
@@ -377,14 +384,14 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.button_connect, self.line_firstname)
         QWidget.setTabOrder(self.line_firstname, self.line_middlename)
         QWidget.setTabOrder(self.line_middlename, self.line_lastname)
-        QWidget.setTabOrder(self.line_lastname, self.join_date)
-        QWidget.setTabOrder(self.join_date, self.combobox_department)
-        QWidget.setTabOrder(self.combobox_department, self.line_title)
-        QWidget.setTabOrder(self.line_title, self.line_address1)
+        QWidget.setTabOrder(self.line_lastname, self.line_address1)
         QWidget.setTabOrder(self.line_address1, self.line_address2)
         QWidget.setTabOrder(self.line_address2, self.line_country)
         QWidget.setTabOrder(self.line_country, self.line_misc)
-        QWidget.setTabOrder(self.line_misc, self.button_send)
+        QWidget.setTabOrder(self.line_misc, self.join_date)
+        QWidget.setTabOrder(self.join_date, self.combobox_department)
+        QWidget.setTabOrder(self.combobox_department, self.line_title)
+        QWidget.setTabOrder(self.line_title, self.button_send)
         QWidget.setTabOrder(self.button_send, self.button_update)
         QWidget.setTabOrder(self.button_update, self.button_delete)
         QWidget.setTabOrder(self.button_delete, self.button_query)
@@ -431,9 +438,6 @@ class Ui_MainWindow(object):
         self.line_firstname.setPlaceholderText(QCoreApplication.translate("MainWindow", u"First Name", None))
         self.line_middlename.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Middle Name", None))
         self.line_lastname.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Last Name", None))
-        self.label.setText(QCoreApplication.translate("MainWindow", u"Join Date", None))
-        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Department", None))
-        self.line_title.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Title", None))
         self.line_address1.setText("")
         self.line_address1.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Address 1", None))
         self.line_address2.setText("")
@@ -441,6 +445,10 @@ class Ui_MainWindow(object):
         self.line_country.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Country", None))
         self.line_misc.setText("")
         self.line_misc.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Misc Info", None))
+        self.groupBox_4.setTitle(QCoreApplication.translate("MainWindow", u"Department", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"Join Date", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Department", None))
+        self.line_title.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Title", None))
 #if QT_CONFIG(statustip)
         self.button_send.setStatusTip(QCoreApplication.translate("MainWindow", u"Send to MongoDB", None))
 #endif // QT_CONFIG(statustip)
